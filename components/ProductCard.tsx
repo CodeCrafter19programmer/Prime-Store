@@ -50,7 +50,7 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
             <div>
                 <h3 className="text-sm font-medium text-gray-900 dark:text-white uppercase tracking-wide">{product.name}</h3>
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">${product.price.toFixed(2)}</p>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Shs {product.price.toLocaleString()}</p>
             </div>
         </Link>
     )

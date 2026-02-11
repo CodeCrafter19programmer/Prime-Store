@@ -43,7 +43,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                     <div className="mb-8">
                         {product.isNew && <span className="text-xs text-gray-400 uppercase tracking-widest font-bold">New Arrival</span>}
                         <h1 className="text-4xl lg:text-5xl font-bold mt-2 uppercase tracking-tight">{product.name}</h1>
-                        <p className="text-2xl font-medium mt-4">${product.price.toFixed(2)}</p>
+                        <p className="text-2xl font-medium mt-4">Shs {product.price.toLocaleString()}</p>
                     </div>
 
                     <div className="prose dark:prose-invert text-gray-500 dark:text-gray-400 mb-10 max-w-none text-lg font-light leading-relaxed">
@@ -51,15 +51,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                     </div>
 
                     <div className="space-y-8 mb-10">
-                        {!isTech && (
-                            <div>
-                                <h3 className="text-sm font-bold uppercase tracking-wider mb-3">Color</h3>
-                                <div className="flex space-x-3">
-                                    <button className="w-10 h-10 rounded-full bg-white border border-gray-300 ring-2 ring-transparent hover:ring-gray-300 focus:ring-black dark:focus:ring-white transition-all"></button>
-                                    <button className="w-10 h-10 rounded-full bg-black border border-gray-300 ring-2 ring-transparent hover:ring-gray-300 focus:ring-black dark:focus:ring-white transition-all"></button>
-                                </div>
-                            </div>
-                        )}
+
 
                         {!isTech && (
                             <div>

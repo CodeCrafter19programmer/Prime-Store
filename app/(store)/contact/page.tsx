@@ -20,8 +20,7 @@ export default function Contact() {
                                 </div>
                                 <div>
                                     <h3 className="font-bold uppercase tracking-wider mb-1">Email</h3>
-                                    <p className="text-gray-500">support@primestore.com</p>
-                                    <p className="text-gray-500">press@primestore.com</p>
+                                    <p className="text-gray-500">ntalestephen19@gmail.com</p>
                                 </div>
                             </div>
 
@@ -31,19 +30,8 @@ export default function Contact() {
                                 </div>
                                 <div>
                                     <h3 className="font-bold uppercase tracking-wider mb-1">Phone</h3>
-                                    <p className="text-gray-500">+1 (555) 123-4567</p>
-                                    <p className="text-xs text-gray-400 mt-1">Mon-Fri 9am-6pm EST</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 bg-gray-50 dark:bg-gray-900 flex items-center justify-center rounded-full shrink-0">
-                                    <MapPin size={20} />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold uppercase tracking-wider mb-1">Office</h3>
-                                    <p className="text-gray-500">123 Fashion Ave, Suite 400</p>
-                                    <p className="text-gray-500">New York, NY 10012</p>
+                                    <p className="text-gray-500">+256778087986</p>
+                                    <p className="text-xs text-gray-400 mt-1">24/7 EAT</p>
                                 </div>
                             </div>
                         </div>

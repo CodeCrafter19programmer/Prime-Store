@@ -39,7 +39,7 @@ export default function Cart() {
                                                 {item.size && `Size: ${item.size}`} {item.color && `| Color: ${item.color}`}
                                             </p>
                                         </div>
-                                        <p className="font-medium">${item.price.toFixed(2)}</p>
+                                        <p className="font-medium">Shs {item.price.toLocaleString()}</p>
                                     </div>
                                     <div className="flex justify-between items-end mt-4">
                                         <div className="flex items-center border border-gray-300 dark:border-gray-700">
@@ -69,7 +69,7 @@ export default function Cart() {
                         <div className="space-y-4 text-sm mb-8">
                             <div className="flex justify-between">
                                 <span className="text-gray-500">Subtotal</span>
-                                <span className="font-medium">${subtotal.toFixed(2)}</span>
+                                <span className="font-medium">Shs {subtotal.toLocaleString()}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-gray-500">Shipping</span>
@@ -77,13 +77,13 @@ export default function Cart() {
                             </div>
                             <div className="flex justify-between pt-4 border-t border-gray-200 dark:border-gray-700 text-lg font-bold">
                                 <span>Total</span>
-                                <span>${subtotal.toFixed(2)}</span>
+                                <span>Shs {subtotal.toLocaleString()}</span>
                             </div>
                         </div>
                         <Link href="/checkout" className="block w-full text-center bg-black dark:bg-white text-white dark:text-black py-4 font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
                             Proceed to Checkout
                         </Link>
-                        <p className="mt-4 text-xs text-center text-gray-400">Secure Checkout - Free Shipping on Orders over $200</p>
+                        <p className="mt-4 text-xs text-center text-gray-400">Secure Checkout - Free Shipping on Orders over Shs 500,000</p>
                     </div>
                 </div>
             )}
