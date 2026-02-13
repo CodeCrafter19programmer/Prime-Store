@@ -274,14 +274,14 @@ export default function Navbar() {
                         className="md:hidden fixed inset-0 bg-white dark:bg-black z-40 pt-32"
                     >
                         <div className="px-4 py-6 space-y-6 flex flex-col items-center text-center overflow-y-auto max-h-screen pb-20">
-                            {['Shop', ...navLinks.map(n => n.name)].map((item) => (
-                                <motion.div key={item} variants={itemVariants}>
+                            {[{ name: 'Shop', href: '/shop' }, ...navLinks].map((item) => (
+                                <motion.div key={item.name} variants={itemVariants}>
                                     <Link
-                                        href={`/shop`}
+                                        href={item.href}
                                         onClick={() => setIsOpen(false)}
                                         className="text-2xl font-bold uppercase tracking-tight hover:text-gray-500 transition-colors"
                                     >
-                                        {item}
+                                        {item.name}
                                     </Link>
                                 </motion.div>
                             ))}
