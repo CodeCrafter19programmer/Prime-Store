@@ -64,6 +64,7 @@ function ShopContent() {
     const categoryParam = searchParams.get('category') || 'all';
     const sortParam = searchParams.get('sort') || 'popular';
     const collectionParam = searchParams.get('collection');
+    const searchParam = searchParams.get('search');
 
     // State for filters
     const [priceRange, setPriceRange] = useState<{ min: number, max: number }>({ min: 0, max: 1000 });
@@ -83,6 +84,17 @@ function ShopContent() {
 
     // Filtering Logic
     const filteredProducts = PRODUCTS.filter(product => {
+        // Search Filter
+        if (searchParam) {
+            const query = searchParam.toLowerCase();
+            const matchesSearch =
+                product.name.toLowerCase().includes(query) ||
+                product.category.toLowerCase().includes(query) ||
+                (product.description && product.description.toLowerCase().includes(query));
+
+            if (!matchesSearch) return false;
+        }
+
         // Category Filter
         let matchCategory = true;
         if (categoryParam !== 'all') {
@@ -131,6 +143,13 @@ function ShopContent() {
 
     // Dynamic Header Info
     const getHeaderInfo = () => {
+        if (searchParam) {
+            return {
+                title: 'Search Results',
+                desc: `Showing results for "${searchParam}"`,
+                image: null
+            };
+        }
         if (collectionParam) {
             return {
                 title: `${collectionParam} Collection`,

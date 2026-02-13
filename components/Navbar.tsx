@@ -7,7 +7,7 @@ import { ShoppingBag, Search, User, Menu, X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 // Animation Variants
 const menuVariants = {
@@ -48,6 +48,20 @@ export default function Navbar() {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const { itemCount } = useCart();
     const { isLoggedIn, logout } = useAuth();
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const router = useRouter(); // usually already imported, but let me check lines 1-13.
+    // Line 10: import { usePathname } from 'next/navigation';
+    // I need to import useRouter if not already imported. Ah, line 10 only imports usePathname. I need to update imports too.
+
+    const handleSearchSubmit = (e: React.FormEvent | React.MouseEvent) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+            setIsSearchOpen(false);
+            setSearchQuery('');
+        }
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -121,9 +135,42 @@ export default function Navbar() {
 
                         {/* Icons */}
                         <div className="hidden md:flex items-center space-x-6">
-                            <button className="hover:text-gray-500 transition-colors">
-                                <Search size={20} strokeWidth={1.5} />
-                            </button>
+                            <div className="flex items-center">
+                                <AnimatePresence>
+                                    {isSearchOpen && (
+                                        <motion.form
+                                            initial={{ width: 0, opacity: 0 }}
+                                            animate={{ width: 200, opacity: 1 }}
+                                            exit={{ width: 0, opacity: 0 }}
+                                            transition={{ duration: 0.3 }}
+                                            onSubmit={handleSearchSubmit}
+                                            className="overflow-hidden mr-2"
+                                        >
+                                            <input
+                                                type="text"
+                                                placeholder="Search products..."
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                className="w-full bg-transparent border-b border-black dark:border-white text-sm py-1 outline-none placeholder:text-gray-400"
+                                                autoFocus
+                                                onBlur={() => !searchQuery && setIsSearchOpen(false)}
+                                            />
+                                        </motion.form>
+                                    )}
+                                </AnimatePresence>
+                                <button
+                                    onClick={(e) => {
+                                        if (isSearchOpen && searchQuery) {
+                                            handleSearchSubmit(e);
+                                        } else {
+                                            setIsSearchOpen(!isSearchOpen);
+                                        }
+                                    }}
+                                    className="hover:text-gray-500 transition-colors"
+                                >
+                                    <Search size={20} strokeWidth={1.5} />
+                                </button>
+                            </div>
                             <Link href="/cart" className="relative hover:text-gray-500 transition-colors">
                                 <ShoppingBag size={20} strokeWidth={1.5} />
                                 {itemCount > 0 && (
