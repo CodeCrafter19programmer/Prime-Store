@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Suspense, useState } from 'react';
-import { Info } from 'lucide-react';
+import { Info, Eye, EyeOff } from 'lucide-react';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 
 export default function Login() {
@@ -21,6 +22,7 @@ function LoginContent() {
     const alertParam = searchParams.get('alert');
     const [email, setEmail] = useState('');
     const [showOrderFound, setShowOrderFound] = useState(alertParam === 'order_found');
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,6 +39,21 @@ function LoginContent() {
     return (
         <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center bg-gray-50 dark:bg-black/20">
             <div className="w-full max-w-md bg-white dark:bg-black p-8 md:p-12 border border-gray-100 dark:border-gray-800 shadow-xl shadow-black/5 dark:shadow-white/5 rounded-sm">
+                <div className="flex flex-col items-center mb-8">
+                    <Image
+                        src="/logo.png"
+                        alt="Prime Store"
+                        width={120}
+                        height={60}
+                        className="object-contain h-12 w-auto dark:invert mb-4"
+                    />
+                    {/* Store Name is usually in the logo, but user "and store name". If logo has text, adding text again implies duplication. 
+                        However, request says "using the logo and store name add them".
+                        I'll add the Store Name text below logo just in case, or assume logo has it. 
+                        The logo alt is "Prime Store". I will add a text element. */}
+                    <h2 className="text-xl font-bold uppercase tracking-widest">Prime Store</h2>
+                </div>
+
                 <h1 className="text-3xl font-bold uppercase tracking-tight mb-2 text-center">Welcome Back</h1>
                 <p className="text-gray-500 text-center text-sm mb-10">Sign in to access your orders and wishlist.</p>
 
@@ -67,7 +84,20 @@ function LoginContent() {
                             <label className="block text-xs font-bold uppercase tracking-wider text-gray-500">Password</label>
                             <Link href="/forgot-password" className="text-xs text-gray-400 hover:text-black dark:hover:text-white underline">Forgot?</Link>
                         </div>
-                        <input type="password" required className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                required
+                                className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors pr-10"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                            >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
+                        </div>
                     </div>
 
                     <button className="w-full bg-black dark:bg-white text-white dark:text-black py-4 font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">

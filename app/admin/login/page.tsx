@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Lock } from 'lucide-react';
+import { Lock, Eye, EyeOff } from 'lucide-react';
+import Image from 'next/image';
 
 export default function AdminLogin() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
@@ -19,10 +21,15 @@ export default function AdminLogin() {
 
     return (
         <div className="w-full max-w-md p-8 bg-white dark:bg-black border border-gray-100 dark:border-gray-800 shadow-xl rounded-sm">
-            <div className="mb-8 text-center">
-                <div className="w-12 h-12 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Lock size={20} />
-                </div>
+            <div className="flex flex-col items-center mb-8">
+                <Image
+                    src="/logo.png"
+                    alt="Prime Store"
+                    width={120}
+                    height={60}
+                    className="object-contain h-12 w-auto dark:invert mb-4"
+                />
+                <h2 className="text-xl font-bold uppercase tracking-widest mb-4">Prime Store</h2>
                 <h1 className="text-2xl font-bold uppercase tracking-tight">Admin Access</h1>
                 <p className="text-gray-500 text-sm mt-2">Enter your credentials to continue</p>
             </div>
@@ -34,7 +41,20 @@ export default function AdminLogin() {
                 </div>
                 <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Password</label>
-                    <input type="password" required className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
+                    <div className="relative">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            required
+                            className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors pr-10"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                        >
+                            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                    </div>
                 </div>
                 <button
                     disabled={loading}
