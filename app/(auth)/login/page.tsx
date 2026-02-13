@@ -43,9 +43,9 @@ function LoginContent() {
                     <Image
                         src="/logo.png"
                         alt="Prime Store"
-                        width={120}
-                        height={60}
-                        className="object-contain h-12 w-auto dark:invert mb-4"
+                        width={360}
+                        height={180}
+                        className="object-contain h-36 w-auto dark:invert mb-4"
                     />
                     {/* Store Name is usually in the logo, but user "and store name". If logo has text, adding text again implies duplication. 
                         However, request says "using the logo and store name add them".

@@ -25,9 +25,9 @@ export default function AdminLogin() {
                 <Image
                     src="/logo.png"
                     alt="Prime Store"
-                    width={120}
-                    height={60}
-                    className="object-contain h-12 w-auto dark:invert mb-4"
+                    width={360}
+                    height={180}
+                    className="object-contain h-36 w-auto dark:invert mb-4"
                 />
                 <h2 className="text-xl font-bold uppercase tracking-widest mb-4">Prime Store</h2>
                 <h1 className="text-2xl font-bold uppercase tracking-tight">Admin Access</h1>
