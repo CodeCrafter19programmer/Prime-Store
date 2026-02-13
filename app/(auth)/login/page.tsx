@@ -32,7 +32,7 @@ function LoginContent() {
         } else {
             console.log('Logging in...');
             login(); // Set session
-            router.push('/account'); // Redirect to account
+            router.push('/'); // Redirect to store home
         }
     };
 

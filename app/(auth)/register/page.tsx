@@ -28,7 +28,7 @@ function RegisterContent() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         login();
-        router.push('/account');
+        router.push('/');
     };
 
     return (
