@@ -6,10 +6,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronRight, MapPin, Phone } from 'lucide-react'; // Removed CreditCard, etc.
 import { useCart } from '@/context/CartContext';
+import { useData } from '@/context/DataContext';
 
 export default function Checkout() {
     const router = useRouter();
-    const { items: cartItems, subtotal: cartTotal } = useCart();
+    const { items: cartItems, subtotal: cartTotal, clearCart } = useCart();
+    const { addOrder } = useData();
     // Form State
     const [formData, setFormData] = useState({
         email: '',
@@ -41,7 +43,15 @@ export default function Checkout() {
     const handleWhatsAppOrder = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Construct Message
+        // 1. Create Order in Admin Dashboard (Local State)
+        addOrder({
+            customerName: `${formData.firstName} ${formData.lastName}`,
+            email: formData.email,
+            total: cartTotal,
+            items: cartItems.map(i => ({ id: i.id, name: i.name, quantity: i.quantity, price: i.price }))
+        });
+
+        // 2. Construct WhatsApp Message
         let message = `*New Order Request*\n\n`;
         message += `*Customer Details:*\n`;
         message += `Name: ${formData.firstName} ${formData.lastName}\n`;
@@ -60,13 +70,12 @@ export default function Checkout() {
 
         const phoneNumber = '256700000000'; // Replace with actual WhatsApp number
         const encodedMessage = encodeURIComponent(message);
+        // 3. Open WhatsApp
         window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
 
-        // Optional: Redirect to success or clear cart
-        // clearCart();
-        // router.push('/checkout/success');
-
-        // For now, just keep them here or maybe show a success modal.
+        // 4. Clear Cart & Redirect
+        clearCart();
+        router.push('/');
     };
 
     return (

@@ -1,12 +1,20 @@
 'use client';
 
 import { DollarSign, Package, ShoppingBag, TrendingUp } from 'lucide-react';
+import { useData } from '@/context/DataContext';
 
 export default function AdminDashboard() {
+    const { orders, products } = useData();
+
+    // Calculate Stats
+    const totalRevenue = orders.reduce((acc, order) => acc + order.total, 0);
+    const totalOrders = orders.length;
+    const totalProducts = products.length;
+
     const stats = [
-        { label: 'Total Revenue', value: '$12,450', change: '+12%', icon: DollarSign },
-        { label: 'Orders', value: '450', change: '+5%', icon: ShoppingBag },
-        { label: 'Products', value: '86', change: '+2', icon: Package },
+        { label: 'Total Revenue', value: `$${totalRevenue.toFixed(2)}`, change: '+12%', icon: DollarSign },
+        { label: 'Orders', value: totalOrders.toString(), change: '+5%', icon: ShoppingBag },
+        { label: 'Products', value: totalProducts.toString(), change: '+2', icon: Package },
         { label: 'Growth', value: '18%', change: '+4%', icon: TrendingUp },
     ];
 
@@ -46,43 +54,58 @@ export default function AdminDashboard() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                            {[1, 2, 3, 4, 5].map((i) => (
-                                <tr key={i} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                    <td className="px-6 py-4 font-medium">#PRIME-88{i}</td>
-                                    <td className="px-6 py-4">John Doe</td>
-                                    <td className="px-6 py-4 text-gray-500">Feb 6, 2026</td>
-                                    <td className="px-6 py-4"><span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold uppercase">Paid</span></td>
-                                    <td className="px-6 py-4 text-right font-medium">$85.00</td>
+                            {orders.slice(0, 5).map((order) => (
+                                <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                    <td className="px-6 py-4 font-medium">#{order.id}</td>
+                                    <td className="px-6 py-4">{order.customerName}</td>
+                                    <td className="px-6 py-4 text-gray-500">{new Date(order.date).toLocaleDateString()}</td>
+                                    <td className="px-6 py-4">
+                                        <span className={`text-xs px-2 py-1 rounded-full font-bold uppercase ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                                                order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                                                    'bg-yellow-100 text-yellow-800'
+                                            }`}>
+                                            {order.status}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 text-right font-medium">${order.total.toFixed(2)}</td>
                                 </tr>
                             ))}
+                            {orders.length === 0 && (
+                                <tr>
+                                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">No recent orders found.</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>
             </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Best Selling Products */}
+                {/* Best Selling Products (Mock Logic for now as we don't track sales count per product yet) */}
                 <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-sm overflow-hidden">
                     <div className="p-6 border-b border-gray-100 dark:border-gray-800">
                         <h3 className="font-bold text-lg">Best Selling Products</h3>
                     </div>
                     <div className="p-6 space-y-6">
-                        {[1, 2, 3].map((i) => (
-                            <div key={i} className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-gray-200 rounded-sm flex-shrink-0" />
+                        {products.slice(0, 3).map((product) => (
+                            <div key={product.id} className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-gray-200 rounded-sm flex-shrink-0 overflow-hidden relative">
+                                    <img src={product.image} alt={product.name} className="object-cover w-full h-full" />
+                                </div>
                                 <div className="flex-1">
-                                    <h4 className="font-bold text-sm">Classic White Tee</h4>
-                                    <p className="text-xs text-gray-500">Men's Collection</p>
+                                    <h4 className="font-bold text-sm">{product.name}</h4>
+                                    <p className="text-xs text-gray-500 capitalize">{product.category}</p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="font-bold text-sm">$45.00</p>
-                                    <p className="text-xs text-green-500 font-bold">124 sales</p>
+                                    <p className="font-bold text-sm">${product.price}</p>
+                                    <p className="text-xs text-green-500 font-bold">High Demand</p>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                {/* Low Stock Alerts */}
+                {/* Low Stock Alerts (Mock Logic) */}
                 <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-sm overflow-hidden">
                     <div className="p-6 border-b border-gray-100 dark:border-gray-800">
                         <h3 className="font-bold text-lg text-red-500">Low Stock Alerts</h3>
@@ -95,7 +118,7 @@ export default function AdminDashboard() {
                                     <p className="text-xs text-red-600/70 dark:text-red-400/70">SKU: PRM-JEAN-00{i}</p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="font-bold text-lg text-red-600 dark:text-red-400">3</p>
+                                    <p className="font-bold text-lg text-red-600 dark:text-red-400">{i}</p>
                                     <p className="text-[10px] uppercase font-bold text-red-400">Left</p>
                                 </div>
                             </div>
