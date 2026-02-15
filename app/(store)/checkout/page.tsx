@@ -9,7 +9,7 @@ import { useCart } from '@/context/CartContext';
 
 export default function Checkout() {
     const router = useRouter();
-    const { cartItems, cartTotal } = useCart();
+    const { items: cartItems, subtotal: cartTotal } = useCart();
     // Form State
     const [formData, setFormData] = useState({
         email: '',
