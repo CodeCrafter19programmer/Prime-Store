@@ -1,24 +1,72 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, CreditCard, Truck, CheckCircle, ShieldCheck } from 'lucide-react';
+import { ChevronRight, MapPin, Phone } from 'lucide-react'; // Removed CreditCard, etc.
+import { useCart } from '@/context/CartContext';
 
 export default function Checkout() {
     const router = useRouter();
-    const [email, setEmail] = useState('');
-    const [isProcessing, setIsProcessing] = useState(false);
+    const { cartItems, cartTotal } = useCart();
+    // Form State
+    const [formData, setFormData] = useState({
+        email: '',
+        firstName: '',
+        lastName: '',
+        address: '',
+        city: '',
+        phone: ''
+    });
 
-    // Mock handle submit
-    const handleSubmit = (e: React.FormEvent) => {
+    // Valid Google Maps Embed URL (using a query)
+    // Note: In production, you should use a real API Key. This is a simple query embed.
+    const [mapUrl, setMapUrl] = useState('https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15955.200947233292!2d32.582520!3d0.347596!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2suk!4v1625686000000!5m2!1sen!2suk');
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    // Update map when address/city changes (Debounced ideally, but simple here)
+    useEffect(() => {
+        if (formData.address && formData.city) {
+            // Simple approach to update map query - normally requires API key for Embed API v2
+            // We'll keep the static map for now as dynamic search embeds require an API key restriction usually.
+            // Or use a direct search link button.
+        }
+    }, [formData.address, formData.city]);
+
+    const handleWhatsAppOrder = (e: React.FormEvent) => {
         e.preventDefault();
-        setIsProcessing(true);
-        // Simulate API call
-        setTimeout(() => {
-            router.push(`/checkout/success?email=${encodeURIComponent(email)}`);
-        }, 2000);
+
+        // Construct Message
+        let message = `*New Order Request*\n\n`;
+        message += `*Customer Details:*\n`;
+        message += `Name: ${formData.firstName} ${formData.lastName}\n`;
+        message += `Phone: ${formData.phone}\n`;
+        message += `Email: ${formData.email}\n`;
+        message += `Address: ${formData.address}, ${formData.city}\n\n`;
+
+        message += `*Order Summary:*\n`;
+        cartItems.forEach(item => {
+            message += `- ${item.name} (${item.size || 'N/A'}) x${item.quantity} - $${item.price * item.quantity}\n`;
+        });
+
+        message += `\n*Total: $${cartTotal.toFixed(2)}*\n`;
+        message += `--------------------------------\n`;
+        message += `Please confirm shipping availability and payment methods.`;
+
+        const phoneNumber = '256700000000'; // Replace with actual WhatsApp number
+        const encodedMessage = encodeURIComponent(message);
+        window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+
+        // Optional: Redirect to success or clear cart
+        // clearCart();
+        // router.push('/checkout/success');
+
+        // For now, just keep them here or maybe show a success modal.
     };
 
     return (
@@ -33,199 +81,125 @@ export default function Checkout() {
 
                 <div className="flex flex-col lg:flex-row gap-12">
 
-                    {/* Left Column: Forms */}
+                    {/* Left Column: Details & Map */}
                     <div className="flex-1 space-y-8">
-                        <h1 className="text-3xl font-bold uppercase tracking-tight mb-8">Checkout</h1>
+                        <section className="bg-white dark:bg-black p-8 rounded-sm border border-gray-100 dark:border-gray-800">
+                            <div className="flex items-center justify-between mb-6">
+                                <h1 className="text-2xl font-bold uppercase tracking-tight">Delivery Details</h1>
+                                <span className="text-xs font-bold text-green-600 bg-green-50 px-3 py-1 rounded-full uppercase">Pay on Delivery / WhatsApp</span>
+                            </div>
 
-                        <form id="checkout-form" onSubmit={handleSubmit} className="space-y-8">
-                            {/* Shipping Address */}
-                            <section className="bg-white dark:bg-black border border-gray-100 dark:border-gray-800 p-6 md:p-8 rounded-sm">
-                                <h2 className="text-xl font-bold uppercase tracking-wide mb-6 flex items-center">
-                                    <span className="w-6 h-6 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center text-xs mr-3">1</span>
-                                    Shipping Information
-                                </h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="col-span-full">
-                                        <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Email Address</label>
-                                        <input
-                                            required
-                                            type="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">First Name</label>
-                                        <input required type="text" className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Last Name</label>
-                                        <input required type="text" className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
-                                    </div>
-                                    <div className="col-span-full">
-                                        <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Address</label>
-                                        <input required type="text" className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">City</label>
-                                        <input required type="text" className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Postal Code</label>
-                                        <input required type="text" className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
-                                    </div>
-                                    <div className="col-span-full">
-                                        <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Phone</label>
-                                        <input required type="tel" className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
-                                    </div>
+                            <form id="whatsapp-form" onSubmit={handleWhatsAppOrder} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="col-span-full">
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Email Address</label>
+                                    <input required name="email" type="email" value={formData.email} onChange={handleInputChange} className="w-full bg-transparent border border-gray-200 dark:border-gray-800 p-3 rounded-sm outline-none focus:border-green-500 transition-colors" />
                                 </div>
-                            </section>
-
-                            {/* Delivery Method */}
-                            <section className="bg-white dark:bg-black border border-gray-100 dark:border-gray-800 p-6 md:p-8 rounded-sm">
-                                <h2 className="text-xl font-bold uppercase tracking-wide mb-6 flex items-center">
-                                    <span className="w-6 h-6 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center text-xs mr-3">2</span>
-                                    Delivery Method
-                                </h2>
-                                <div className="space-y-4">
-                                    <label className="flex items-center justify-between border border-black dark:border-white p-4 cursor-pointer">
-                                        <div className="flex items-center">
-                                            <input type="radio" name="delivery" defaultChecked className="accent-black dark:accent-white mr-4 w-4 h-4" />
-                                            <div>
-                                                <p className="font-bold text-sm uppercase">Standard Delivery</p>
-                                                <p className="text-xs text-gray-500 mt-1">3-5 Business Days</p>
-                                            </div>
-                                        </div>
-                                        <span className="font-medium text-sm">Free</span>
-                                    </label>
-                                    <label className="flex items-center justify-between border border-gray-200 dark:border-gray-800 p-4 cursor-pointer hover:border-gray-400 transition-colors">
-                                        <div className="flex items-center">
-                                            <input type="radio" name="delivery" className="accent-black dark:accent-white mr-4 w-4 h-4" />
-                                            <div>
-                                                <p className="font-bold text-sm uppercase">Express Shipping</p>
-                                                <p className="text-xs text-gray-500 mt-1">1-2 Business Days</p>
-                                            </div>
-                                        </div>
-                                        <span className="font-medium text-sm">$15.00</span>
-                                    </label>
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">First Name</label>
+                                    <input required name="firstName" type="text" value={formData.firstName} onChange={handleInputChange} className="w-full bg-transparent border border-gray-200 dark:border-gray-800 p-3 rounded-sm outline-none focus:border-green-500 transition-colors" />
                                 </div>
-                            </section>
-
-                            {/* Payment */}
-                            <section className="bg-white dark:bg-black border border-gray-100 dark:border-gray-800 p-6 md:p-8 rounded-sm">
-                                <h2 className="text-xl font-bold uppercase tracking-wide mb-6 flex items-center">
-                                    <span className="w-6 h-6 bg-black dark:bg-white text-white dark:text-black rounded-full flex items-center justify-center text-xs mr-3">3</span>
-                                    Payment
-                                </h2>
-
-                                <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-900 rounded flex items-center text-sm text-gray-600 dark:text-gray-400">
-                                    <ShieldCheck size={20} className="mr-3 text-green-600" />
-                                    All transactions are secure and encrypted.
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Last Name</label>
+                                    <input required name="lastName" type="text" value={formData.lastName} onChange={handleInputChange} className="w-full bg-transparent border border-gray-200 dark:border-gray-800 p-3 rounded-sm outline-none focus:border-green-500 transition-colors" />
                                 </div>
-
-                                <div className="space-y-4">
-                                    <div className="border border-black dark:border-white p-4">
-                                        <div className="flex items-center mb-4">
-                                            <input type="radio" name="payment" defaultChecked className="accent-black dark:accent-white mr-4 w-4 h-4" />
-                                            <span className="font-bold text-sm uppercase flex items-center gap-2">
-                                                Credit Card
-                                                <span className="flex gap-1 ml-2 text-gray-400">
-                                                    <CreditCard size={16} />
-                                                </span>
-                                            </span>
-                                        </div>
-                                        <div className="grid grid-cols-1 gap-4 pl-8">
-                                            <input placeholder="Card Number" className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <input placeholder="MM / YY" className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
-                                                <input placeholder="CVC" className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
-                                            </div>
-                                            <input placeholder="Name on Card" className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
-                                        </div>
-                                    </div>
-
-                                    <label className="flex items-center border border-gray-200 dark:border-gray-800 p-4 cursor-pointer hover:border-gray-400 transition-colors">
-                                        <input type="radio" name="payment" className="accent-black dark:accent-white mr-4 w-4 h-4" />
-                                        <span className="font-bold text-sm uppercase">PayPal</span>
-                                    </label>
-                                    <label className="flex items-center border border-gray-200 dark:border-gray-800 p-4 cursor-pointer hover:border-gray-400 transition-colors">
-                                        <input type="radio" name="payment" className="accent-black dark:accent-white mr-4 w-4 h-4" />
-                                        <span className="font-bold text-sm uppercase">Mobile Money / M-Pesa</span>
-                                    </label>
+                                <div className="col-span-full">
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Address / Location</label>
+                                    <input required name="address" type="text" value={formData.address} onChange={handleInputChange} className="w-full bg-transparent border border-gray-200 dark:border-gray-800 p-3 rounded-sm outline-none focus:border-green-500 transition-colors" placeholder="e.g. Plot 12, Kampala Road" />
                                 </div>
-                            </section>
-                        </form>
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">City</label>
+                                    <input required name="city" type="text" value={formData.city} onChange={handleInputChange} className="w-full bg-transparent border border-gray-200 dark:border-gray-800 p-3 rounded-sm outline-none focus:border-green-500 transition-colors" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Phone (WhatsApp)</label>
+                                    <input required name="phone" type="tel" value={formData.phone} onChange={handleInputChange} className="w-full bg-transparent border border-gray-200 dark:border-gray-800 p-3 rounded-sm outline-none focus:border-green-500 transition-colors" />
+                                </div>
+                            </form>
+                        </section>
+
+                        {/* Google Maps Embed Placeholder */}
+                        <section className="bg-white dark:bg-black p-2 rounded-sm border border-gray-100 dark:border-gray-800 h-64 relative overflow-hidden group">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15955.200947233292!2d32.582520!3d0.347596!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2suk!4v1625686000000!5m2!1sen!2suk"
+                                width="100%"
+                                height="100%"
+                                style={{ border: 0 }}
+                                allowFullScreen
+                                loading="lazy"
+                                className="grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
+                            ></iframe>
+                            <div className="absolute top-4 left-4 bg-white dark:bg-black px-3 py-1 text-xs font-bold shadow-md rounded-full flex items-center gap-2">
+                                <MapPin size={12} className="text-red-500" /> Confirm Location on Map
+                            </div>
+                        </section>
+
+                        {/* Commented Out Payment Section as requested
+                        <section className="opacity-50 pointer-events-none filter blur-[1px]">
+                            <h2 className="text-xl font-bold uppercase tracking-wide mb-6">Payment (Coming Soon)</h2>
+                             ...
+                        </section>
+                        */}
                     </div>
 
                     {/* Right Column: Order Summary */}
                     <div className="flex-1 lg:max-w-md">
-                        <div className="bg-white dark:bg-black border border-gray-100 dark:border-gray-800 p-6 md:p-8 sticky top-32 rounded-sm shadow-sm md:shadow-none">
+                        <div className="bg-white dark:bg-black border border-gray-100 dark:border-gray-800 p-6 md:p-8 sticky top-32 rounded-sm shadow-xl shadow-green-900/5">
                             <h2 className="text-xl font-bold uppercase tracking-wide mb-6">Order Summary</h2>
 
-                            {/* Items List (Collapsed version) */}
-                            <div className="space-y-4 mb-8">
-                                <div className="flex gap-4">
-                                    <div className="relative w-16 h-20 bg-gray-200 dark:bg-gray-800 rounded-sm overflow-hidden">
-                                        <Image
-                                            src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1780&auto=format&fit=crop"
-                                            alt="Item"
-                                            fill
-                                            className="object-cover"
-                                        />
-                                        <span className="absolute top-0 right-0 bg-gray-500 text-white text-[10px] h-5 w-5 flex items-center justify-center rounded-full -mr-2 -mt-2">1</span>
+                            <div className="space-y-4 mb-8 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+                                {cartItems.map((item) => (
+                                    <div key={`${item.id}-${item.size}`} className="flex gap-4">
+                                        <div className="relative w-16 h-20 bg-gray-100 dark:bg-gray-800 rounded-sm overflow-hidden flex-shrink-0">
+                                            <Image
+                                                src={item.image}
+                                                alt={item.name}
+                                                fill
+                                                className="object-cover"
+                                            />
+                                            <span className="absolute top-0 right-0 bg-black text-white text-[10px] h-5 w-5 flex items-center justify-center rounded-bl-md font-bold">{item.quantity}</span>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-bold truncate">{item.name}</p>
+                                            <p className="text-xs text-gray-500">{item.size} / {item.color || 'Standard'}</p>
+                                        </div>
+                                        <p className="text-sm font-bold">${(item.price * item.quantity).toFixed(2)}</p>
                                     </div>
-                                    <div className="flex-1">
-                                        <p className="text-sm font-medium">Classic White Tee</p>
-                                        <p className="text-xs text-gray-500">M / White</p>
-                                    </div>
-                                    <p className="text-sm font-medium">$45.00</p>
-                                </div>
-                                <div className="flex gap-4">
-                                    <div className="relative w-16 h-20 bg-gray-200 dark:bg-gray-800 rounded-sm overflow-hidden">
-                                        <Image
-                                            src="https://images.unsplash.com/photo-1544642899-f0d6e5f6ed6f?q=80&w=1887&auto=format&fit=crop"
-                                            alt="Item"
-                                            fill
-                                            className="object-cover"
-                                        />
-                                        <span className="absolute top-0 right-0 bg-gray-500 text-white text-[10px] h-5 w-5 flex items-center justify-center rounded-full -mr-2 -mt-2">1</span>
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="text-sm font-medium">Oversized Denim Jacket</p>
-                                        <p className="text-xs text-gray-500">L / Blue</p>
-                                    </div>
-                                    <p className="text-sm font-medium">$120.00</p>
-                                </div>
+                                ))}
+                                {cartItems.length === 0 && (
+                                    <p className="text-sm text-gray-500 italic">Your cart is empty.</p>
+                                )}
                             </div>
 
                             <div className="border-t border-b border-gray-100 dark:border-gray-800 py-6 mb-6 space-y-3">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-500">Subtotal</span>
-                                    <span className="font-medium">$165.00</span>
+                                    <span className="font-medium">${cartTotal.toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-500">Shipping</span>
-                                    <span className="font-medium">Free</span>
+                                    <span className="font-medium text-green-600">Calculated on WhatsApp</span>
                                 </div>
                             </div>
 
                             <div className="flex justify-between text-lg font-bold mb-8">
                                 <span>Total</span>
-                                <span>$165.00</span>
+                                <span>${cartTotal.toFixed(2)}</span>
                             </div>
 
                             <button
-                                form="checkout-form"
+                                form="whatsapp-form"
                                 type="submit"
-                                disabled={isProcessing}
-                                className="w-full bg-black dark:bg-white text-white dark:text-black py-4 font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center"
+                                disabled={cartItems.length === 0}
+                                className="w-full bg-[#25D366] text-white py-4 font-bold uppercase tracking-widest hover:bg-[#128C7E] transition-colors flex items-center justify-center gap-3 shadow-lg shadow-green-500/20 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {isProcessing ? 'Processing...' : 'Place Order'}
+                                <Phone size={20} /> Order via WhatsApp
                             </button>
-                            <p className="text-[10px] text-gray-400 text-center mt-4">By placing your order, you agree to our Terms & Conditions and return policies.</p>
+                            <p className="text-[10px] text-gray-400 text-center mt-4">
+                                You will be redirected to WhatsApp to complete your order details with our team.
+                            </p>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
