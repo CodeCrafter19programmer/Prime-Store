@@ -2,6 +2,7 @@
 
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { useCartAnimation } from '@/context/CartAnimationContext';
 import Image from 'next/image';
 import { useState, use } from 'react';
 import { PRODUCTS } from '@/models/products';
@@ -13,6 +14,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
     const { id } = use(params);
     const { addItem } = useCart();
     const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+    const { startAnimation } = useCartAnimation();
     const [selectedSize, setSelectedSize] = useState('M');
 
     // Find product
@@ -27,7 +29,6 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
         }
     };
 
-    // ... (rest of filtering code same as before, lines 18-24)
     // Related Products (Same category, exclude current)
     const relatedProducts = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
 
@@ -39,7 +40,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
     return (
         <div className="pt-32 px-4 max-w-7xl mx-auto min-h-screen pb-24">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-24 mb-24">
-                {/* Images (lines 28-40 same) */}
+                {/* Images */}
                 <div className="space-y-4">
                     <div className="relative aspect-[3/4] bg-gray-100 dark:bg-gray-800 overflow-hidden rounded-sm">
                         <Image
@@ -54,7 +55,6 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
 
                 {/* Info */}
                 <div className="sticky top-32 h-fit mb-12">
-                    {/* ... (lines 43-75 same) ... */}
                     <div className="mb-8">
                         {product.isNew && <span className="text-xs text-gray-400 uppercase tracking-widest font-bold">New Arrival</span>}
                         <h1 className="text-4xl lg:text-5xl font-bold mt-2 uppercase tracking-tight">{product.name}</h1>
@@ -87,13 +87,18 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
 
                     <div className="flex gap-4">
                         <button
-                            onClick={() => addItem({
-                                id: product.id,
-                                name: product.name,
-                                price: product.price,
-                                image: product.image,
-                                size: selectedSize
-                            })}
+                            onClick={(e) => {
+                                const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                                startAnimation(rect, product.image);
+
+                                addItem({
+                                    id: product.id,
+                                    name: product.name,
+                                    price: product.price,
+                                    image: product.image,
+                                    size: selectedSize
+                                });
+                            }}
                             className="flex-1 bg-black dark:bg-white text-white dark:text-black py-4 font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
                         >
                             Add to Cart

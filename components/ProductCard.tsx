@@ -14,16 +14,21 @@ interface Product {
 
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { useCartAnimation } from '@/context/CartAnimationContext';
 import { Heart } from 'lucide-react';
 
 export default function ProductCard({ product }: { product: Product }) {
     const { addItem } = useCart();
     const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+    const { startAnimation } = useCartAnimation();
     const inWishlist = isInWishlist(product.id);
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
-        // ... (existing logic)
+
+        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+        startAnimation(rect, product.image);
+
         addItem({
             id: product.id,
             name: product.name,

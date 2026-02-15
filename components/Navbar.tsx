@@ -171,8 +171,15 @@ export default function Navbar() {
                                     <Search size={20} strokeWidth={1.5} />
                                 </button>
                             </div>
-                            <Link href="/cart" className="relative hover:text-gray-500 transition-colors">
-                                <ShoppingBag size={20} strokeWidth={1.5} />
+                            <Link href="/cart" id="cart-icon-container" className="relative hover:text-gray-500 transition-colors">
+                                <motion.div
+                                    key={itemCount}
+                                    initial={{ scale: 1 }}
+                                    animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
+                                    transition={{ duration: 0.4 }}
+                                >
+                                    <ShoppingBag size={20} strokeWidth={1.5} />
+                                </motion.div>
                                 {itemCount > 0 && (
                                     <span className="absolute -top-1 -right-1 bg-black dark:bg-white text-white dark:text-black text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                                         {itemCount}
