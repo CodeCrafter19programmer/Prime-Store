@@ -18,7 +18,7 @@ export default function Account() {
     };
 
     return (
-        <div className="min-h-screen pt-32 pb-20 px-4 max-w-7xl mx-auto">
+        <div className="min-h-screen pt-24 pb-20 px-4 max-w-7xl mx-auto">
             <h1 className="text-4xl font-bold uppercase tracking-tight mb-2">My Account</h1>
             <p className="text-gray-500 mb-12">Welcome back, John.</p>
 

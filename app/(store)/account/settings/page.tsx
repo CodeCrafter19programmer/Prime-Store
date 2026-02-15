@@ -36,8 +36,8 @@ export default function AccountSettings() {
             if (verificationData.email && verificationData.password) {
                 // Determine if valid (mock: any non-empty)
                 setStep('otp');
-                // Simulate sending email
-                alert('A verification code "123456" has been sent to your email.');
+                // Simulate sending email (Silent in UI)
+                console.log('Verification code sent: 123456');
             } else {
                 setError('Please fill in all fields.');
             }
@@ -56,7 +56,7 @@ export default function AccountSettings() {
                 // Pre-fill email from verification (or keep original profile email if they are just verifying identity)
                 setProfileData(prev => ({ ...prev, email: verificationData.email }));
             } else {
-                setError('Invalid code. Try "123456".');
+                setError('Invalid verification code. Please try again.');
             }
             setIsLoading(false);
         }, 1000);
@@ -68,14 +68,13 @@ export default function AccountSettings() {
 
         // Save logic (mock)
         setTimeout(() => {
-            alert('Settings saved successfully!');
             router.push('/account'); // Redirect to Account Overview
             setIsLoading(false);
         }, 1500);
     };
 
     return (
-        <div className="min-h-screen pt-32 pb-20 px-4 max-w-7xl mx-auto">
+        <div className="min-h-screen pt-24 pb-20 px-4 max-w-7xl mx-auto">
             <h1 className="text-4xl font-bold uppercase tracking-tight mb-2">Account Settings</h1>
             <p className="text-gray-500 mb-12">Manage your personal information and security.</p>
 
