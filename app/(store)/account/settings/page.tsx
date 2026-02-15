@@ -18,13 +18,32 @@ export default function AccountSettings() {
 
     // Form Data
     const [verificationData, setVerificationData] = useState({ email: '', password: '' });
-    const [otpCode, setOtpCode] = useState('');
+    const [otp, setOtp] = useState(['', '', '', '', '', '']); // Array for 6 boxes
     const [profileData, setProfileData] = useState({
         name: 'John Doe',
         email: 'john.doe@example.com',
         phone: '+256 700 000000',
         address: 'Kampala, Uganda'
     });
+
+    const handleOtpChange = (element: HTMLInputElement, index: number) => {
+        if (isNaN(Number(element.value))) return false;
+
+        setOtp([...otp.map((d, idx) => (idx === index ? element.value : d))]);
+
+        // Focus next input
+        if (element.nextSibling && element.value !== '') {
+            (element.nextSibling as HTMLInputElement).focus();
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+        if (e.key === 'Backspace' && !otp[index] && index > 0) {
+            // Focus previous input on backspace if current is empty
+            const prev = (e.currentTarget.previousSibling as HTMLInputElement);
+            if (prev) prev.focus();
+        }
+    };
 
     const handleVerifySubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -50,8 +69,10 @@ export default function AccountSettings() {
         setIsLoading(true);
         setError('');
 
+        const code = otp.join('');
+
         setTimeout(() => {
-            if (otpCode === '123456') {
+            if (code === '123456') {
                 setStep('edit');
                 // Pre-fill email from verification (or keep original profile email if they are just verifying identity)
                 setProfileData(prev => ({ ...prev, email: verificationData.email }));
@@ -147,16 +168,22 @@ export default function AccountSettings() {
                                 {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
                                 <div>
-                                    <label className="block text-xs font-bold uppercase tracking-wider mb-2">Verification Code</label>
-                                    <input
-                                        type="text"
-                                        required
-                                        value={otpCode}
-                                        onChange={(e) => setOtpCode(e.target.value)}
-                                        className="w-full px-4 py-3 text-center text-2xl tracking-[1em] bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 outline-none focus:border-black dark:focus:border-white transition-colors uppercase"
-                                        placeholder="123456"
-                                        maxLength={6}
-                                    />
+                                    <label className="block text-xs font-bold uppercase tracking-wider mb-4 text-center">Verification Code</label>
+                                    <div className="flex gap-2 justify-center">
+                                        {otp.map((data, index) => (
+                                            <input
+                                                className="w-12 h-14 border border-gray-200 dark:border-gray-800 text-center text-xl font-bold rounded-sm focus:border-black dark:focus:border-white outline-none transition-colors bg-gray-50 dark:bg-gray-900"
+                                                type="text"
+                                                name="otp"
+                                                maxLength={1}
+                                                key={index}
+                                                value={data}
+                                                onChange={e => handleOtpChange(e.target, index)}
+                                                onKeyDown={e => handleKeyDown(e, index)}
+                                                onFocus={e => e.target.select()}
+                                            />
+                                        ))}
+                                    </div>
                                 </div>
 
                                 <button
