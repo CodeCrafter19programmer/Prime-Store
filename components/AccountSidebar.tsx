@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Package, User, MapPin, Heart, LogOut } from 'lucide-react';
+import { Package, User, MapPin, Heart, LogOut, Settings } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
@@ -19,7 +19,8 @@ export default function AccountSidebar() {
         { name: 'Overview', href: '/account', icon: User },
         { name: 'Orders', href: '/account/orders', icon: Package },
         { name: 'Addresses', href: '/account/addresses', icon: MapPin },
-        { name: 'Wishlist', href: '/wishlist', icon: Heart },
+        { name: 'Wishlist', href: '/account/wishlist', icon: Heart },
+        { name: 'Settings', href: '/account/settings', icon: Settings },
     ];
 
     return (

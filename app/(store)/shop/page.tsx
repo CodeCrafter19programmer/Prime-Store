@@ -291,17 +291,7 @@ function ShopContent() {
                         </div>
                     </FilterSection>
 
-                    <FilterSection
-                        title="Color"
-                        isOpen={openSections.color}
-                        onToggle={() => toggleSection('color')}
-                    >
-                        <div className="flex flex-wrap gap-3">
-                            {['bg-white border-gray-200', 'bg-black', 'bg-blue-900', 'bg-green-800', 'bg-red-800'].map((color, i) => (
-                                <button key={i} className={`w-6 h-6 rounded-full border ${color} hover:scale-110 transition-transform`}></button>
-                            ))}
-                        </div>
-                    </FilterSection>
+
                 </div>
 
                 {/* Grid */}
