@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 
 import { AuthProvider } from "@/context/AuthContext";
 import { DataProvider } from "@/context/DataContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 
 export default function RootLayout({
   children,
@@ -30,7 +31,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
           <DataProvider>
-            {children}
+            <WishlistProvider>
+              {children}
+            </WishlistProvider>
           </DataProvider>
         </AuthProvider>
       </body>

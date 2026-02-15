@@ -68,7 +68,7 @@ export default function Checkout() {
         message += `--------------------------------\n`;
         message += `Please confirm shipping availability and payment methods.`;
 
-        const phoneNumber = '256700000000'; // Replace with actual WhatsApp number
+        const phoneNumber = '256778087986'; // Updated WhatsApp number
         const encodedMessage = encodeURIComponent(message);
         // 3. Open WhatsApp
         window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');

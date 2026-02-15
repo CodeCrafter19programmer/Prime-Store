@@ -13,18 +13,33 @@ interface Product {
 }
 
 import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
+import { Heart } from 'lucide-react';
 
 export default function ProductCard({ product }: { product: Product }) {
     const { addItem } = useCart();
+    const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+    const inWishlist = isInWishlist(product.id);
 
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
+        // ... (existing logic)
         addItem({
             id: product.id,
             name: product.name,
             price: product.price,
             image: product.image,
         });
+    };
+
+    const toggleWishlist = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (inWishlist) {
+            removeFromWishlist(product.id);
+        } else {
+            addToWishlist(product.id);
+        }
     };
 
     return (
@@ -37,6 +52,14 @@ export default function ProductCard({ product }: { product: Product }) {
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
+
+                <button
+                    onClick={toggleWishlist}
+                    className={`absolute top-2 right-2 p-2 rounded-full transition-all duration-300 transform ${inWishlist ? 'opacity-100 scale-100 bg-white/80 dark:bg-black/80' : 'opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 hover:bg-white/50 dark:hover:bg-black/50'}`}
+                >
+                    <Heart size={16} className={inWishlist ? 'fill-red-500 text-red-500' : 'text-black dark:text-white'} />
+                </button>
+
                 {/* Glassmorphic "Add to Cart" that slides up */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                     <button
