@@ -172,7 +172,7 @@ export default function AccountSettings() {
                                     <div className="flex gap-2 justify-center">
                                         {otp.map((data, index) => (
                                             <input
-                                                className="w-12 h-14 border border-gray-200 dark:border-gray-800 text-center text-xl font-bold rounded-sm focus:border-black dark:focus:border-white outline-none transition-colors bg-gray-50 dark:bg-gray-900"
+                                                className="w-12 h-14 border border-gray-400 dark:border-gray-600 text-center text-xl font-bold rounded-sm focus:border-black dark:focus:border-white outline-none transition-colors bg-white dark:bg-gray-900 text-black dark:text-white"
                                                 type="text"
                                                 name="otp"
                                                 maxLength={1}
