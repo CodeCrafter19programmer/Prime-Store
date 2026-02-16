@@ -1,64 +1,65 @@
 'use client';
 
 import Link from 'next/link';
-import AccountSidebar from '@/components/AccountSidebar';
-// LogOut, Heart, MapPin, User are likely not used now, but checking if Package is used.
-// Looking at previous content of page.tsx lines 32-65, icons are NOT used in the main content part shown.
-// So I can probably remove them. But to be safe and avoid "unused var" errors if I'm wrong about hidden code, I'll keep them or just ignore unused for now.
-// Actually, I'll just keep the imports as is but add AccountSidebar to avoid breaking if I missed a usage.
-import { useRouter } from 'next/navigation';
-import { Package, User, MapPin, Heart, LogOut } from 'lucide-react';
+import { Package, Clock, ChevronRight, Truck } from 'lucide-react';
 
 export default function Account() {
-    const router = useRouter();
-
-    const handleSignOut = () => {
-        // In a real app, clear auth tokens/session here
-        router.push('/');
-    };
-
     return (
-        <div className="min-h-screen pt-24 pb-20 px-4 max-w-7xl mx-auto">
-            <h1 className="text-4xl font-bold uppercase tracking-tight mb-2">My Account</h1>
-            <p className="text-gray-500 mb-12">Welcome back, John.</p>
+        <div className="space-y-12 animate-in fade-in duration-500">
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="border border-gray-100 dark:border-gray-800 p-8 rounded-xl bg-gray-50/50 dark:bg-gray-900/20 hover:border-black dark:hover:border-white transition-colors group">
+                    <div className="flex items-start justify-between mb-4">
+                        <h3 className="font-bold text-sm uppercase tracking-wider text-gray-500 group-hover:text-black dark:group-hover:text-white transition-colors">Total Orders</h3>
+                        <Package className="text-gray-400 group-hover:text-black dark:group-hover:text-white transition-colors" size={24} strokeWidth={1.5} />
+                    </div>
+                    <p className="text-5xl font-bold tracking-tighter">12</p>
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {/* Sidebar / Menu */}
-                {/* Sidebar / Menu */}
-                <AccountSidebar />
+                <div className="border border-gray-100 dark:border-gray-800 p-8 rounded-xl bg-orange-50/50 dark:bg-orange-900/10 hover:border-orange-500 transition-colors group">
+                    <div className="flex items-start justify-between mb-4">
+                        <h3 className="font-bold text-sm uppercase tracking-wider text-orange-600/70 group-hover:text-orange-600 transition-colors">Pending</h3>
+                        <Clock className="text-orange-300 group-hover:text-orange-500 transition-colors" size={24} strokeWidth={1.5} />
+                    </div>
+                    <p className="text-5xl font-bold tracking-tighter text-orange-600">2</p>
+                </div>
+            </div>
 
-                {/* Main Content: Overview */}
-                <div className="md:col-span-2 space-y-8">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div className="border border-gray-100 dark:border-gray-800 p-8 rounded-sm">
-                            <h3 className="font-bold text-lg uppercase tracking-wide mb-4">Total Orders</h3>
-                            <p className="text-4xl font-bold">12</p>
+            {/* Recent Order Preview */}
+            <div>
+                <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold uppercase tracking-wide">Recent Order</h2>
+                    <Link href="/account/orders" className="text-sm font-bold text-gray-500 hover:text-black dark:hover:text-white flex items-center gap-1 transition-colors">
+                        View All Orders <ChevronRight size={16} />
+                    </Link>
+                </div>
+
+                <div className="border border-gray-100 dark:border-gray-800 p-6 sm:p-8 rounded-xl shadow-sm hover:shadow-md transition-all">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-100 dark:border-gray-800 pb-6 mb-6 gap-4">
+                        <div>
+                            <div className="flex items-center gap-3 mb-1">
+                                <h3 className="font-bold text-lg">Order #PRIME-8821</h3>
+                                <span className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs px-2.5 py-1 font-bold uppercase rounded-full flex items-center gap-1">
+                                    <Truck size={12} /> Delivered
+                                </span>
+                            </div>
+                            <p className="text-sm text-gray-500">Placed on Feb 6, 2026</p>
                         </div>
-                        <div className="border border-gray-100 dark:border-gray-800 p-8 rounded-sm">
-                            <h3 className="font-bold text-lg uppercase tracking-wide mb-4">Pending</h3>
-                            <p className="text-4xl font-bold text-orange-500">2</p>
+                        <div className="text-right">
+                            <p className="font-bold text-lg">$165.00</p>
+                            <p className="text-xs text-gray-500">2 Items</p>
                         </div>
                     </div>
 
-                    {/* Recent Order Preview */}
-                    <div>
-                        <h2 className="text-xl font-bold uppercase tracking-wide mb-6">Recent Order</h2>
-                        <div className="border border-gray-100 dark:border-gray-800 p-6 rounded-sm">
-                            <div className="flex justify-between items-start border-b border-gray-100 dark:border-gray-800 pb-4 mb-4">
-                                <div>
-                                    <p className="font-bold text-sm">#PRIME-8821</p>
-                                    <p className="text-xs text-gray-500">Placed on Feb 6, 2026</p>
-                                </div>
-                                <span className="bg-green-100 text-green-800 text-xs px-2 py-1 font-bold uppercase rounded-sm">Delivered</span>
-                            </div>
-                            <div className="flex gap-4 mb-4">
-                                <div className="w-16 h-20 bg-gray-200 dark:bg-gray-800 rounded-sm" />
-                                <div className="w-16 h-20 bg-gray-200 dark:bg-gray-800 rounded-sm" />
-                            </div>
-                            <div className="text-right">
-                                <Link href="/account/orders" className="text-sm font-bold text-black dark:text-white underline">View Details</Link>
-                            </div>
+                    <div className="flex items-center justify-between">
+                        <div className="flex -space-x-4">
+                            <div className="w-16 h-20 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-sm border-2 border-white dark:border-black flex items-center justify-center text-xs text-gray-400">Img 1</div>
+                            <div className="w-16 h-20 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-sm border-2 border-white dark:border-black flex items-center justify-center text-xs text-gray-400">Img 2</div>
                         </div>
+
+                        <Link href="/account/orders" className="bg-black dark:bg-white text-white dark:text-black px-6 py-3 rounded-lg text-sm font-bold uppercase tracking-wide hover:opacity-80 transition-opacity">
+                            View Details
+                        </Link>
                     </div>
                 </div>
             </div>
