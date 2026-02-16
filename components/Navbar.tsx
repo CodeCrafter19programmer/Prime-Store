@@ -340,6 +340,29 @@ export default function Navbar() {
                                     </Link>
                                 </motion.div>
                             ))}
+
+                            {/* Mobile Auth Links (Visible only when logged out) */}
+                            {!isLoggedIn && (
+                                <>
+                                    <motion.div variants={itemVariants} className="pt-4 border-t border-gray-100 dark:border-gray-800 w-full">
+                                        <Link
+                                            href="/login"
+                                            onClick={() => setIsOpen(false)}
+                                            className="block text-xl font-bold uppercase tracking-tight hover:text-black dark:hover:text-white text-gray-500 mb-4 transition-colors"
+                                        >
+                                            Sign In
+                                        </Link>
+                                        <Link
+                                            href="/register"
+                                            onClick={() => setIsOpen(false)}
+                                            className="block text-xl font-bold uppercase tracking-tight hover:text-black dark:hover:text-white text-gray-500 transition-colors"
+                                        >
+                                            Create Account
+                                        </Link>
+                                    </motion.div>
+                                </>
+                            )}
+
                             <motion.div variants={itemVariants} className="pt-8 flex justify-center space-x-12 w-full border-t border-gray-100 dark:border-gray-800 mt-4">
                                 <button><Search size={28} strokeWidth={1.5} /></button>
                                 <Link href="/cart" onClick={() => setIsOpen(false)} className="relative">
@@ -350,7 +373,10 @@ export default function Navbar() {
                                         </span>
                                     )}
                                 </Link>
-                                <Link href="/account" onClick={() => setIsOpen(false)}><User size={28} strokeWidth={1.5} /></Link>
+                                {/* Account Icon: Goes to Account if logged in, Login if not */}
+                                <Link href={isLoggedIn ? "/account" : "/login"} onClick={() => setIsOpen(false)}>
+                                    <User size={28} strokeWidth={1.5} />
+                                </Link>
                             </motion.div>
                         </div>
                     </motion.div>

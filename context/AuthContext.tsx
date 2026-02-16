@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 
 interface AuthContextType {
     isLoggedIn: boolean;
+    isLoading: boolean;
     login: () => void;
     logout: () => void;
 }
@@ -12,6 +13,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         // Check for mock session
@@ -19,6 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (session) {
             setIsLoggedIn(true);
         }
+        setIsLoading(false);
     }, []);
 
     const login = () => {
@@ -32,7 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+        <AuthContext.Provider value={{ isLoggedIn, isLoading, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

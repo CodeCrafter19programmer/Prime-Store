@@ -1,6 +1,8 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useAuth } from '@/context/AuthContext';
 import AccountSidebar from '@/components/AccountSidebar';
 
 // Map routes to page titles & descriptions
@@ -18,6 +20,20 @@ export default function AccountLayout({
     children: React.ReactNode;
 }>) {
     const pathname = usePathname();
+    const router = useRouter();
+    const { isLoggedIn, isLoading } = useAuth();
+
+    // Protect Route
+    useEffect(() => {
+        if (!isLoading && !isLoggedIn) {
+            router.push('/login');
+        }
+    }, [isLoading, isLoggedIn, router]);
+
+    // Don't render anything while checking auth or if not logged in
+    if (isLoading || !isLoggedIn) {
+        return null; // or a loading spinner
+    }
 
     // Order detail pages (/account/orders/[id]) use a different layout
     const isOrderDetail = pathname.startsWith('/account/orders/') && pathname !== '/account/orders';
