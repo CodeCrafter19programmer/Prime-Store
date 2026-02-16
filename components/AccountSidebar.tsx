@@ -58,7 +58,7 @@ export default function AccountSidebar() {
 
     const handleLogout = () => {
         logout();
-        router.push('/');
+        window.location.href = '/';
     };
 
     return (
