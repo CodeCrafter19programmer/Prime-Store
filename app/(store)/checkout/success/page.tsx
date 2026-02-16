@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Check, ArrowRight, UserPlus, Package } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import { useAuth } from '@/context/AuthContext';
 
 export default function Success() {
     return (
@@ -17,6 +18,7 @@ export default function Success() {
 function SuccessContent() {
     const searchParams = useSearchParams();
     const email = searchParams.get('email') || '';
+    const { isLoggedIn } = useAuth();
 
     return (
         <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center bg-gray-50 dark:bg-black/20">
@@ -71,30 +73,32 @@ function SuccessContent() {
                 </motion.div>
 
                 {/* Account Creation Offer */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                    className="bg-white dark:bg-black border border-gray-200 dark:border-gray-700 p-6 rounded-sm mb-8 text-left shadow-sm"
-                >
-                    <div className="flex items-start gap-4">
-                        <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-full">
-                            <UserPlus size={24} />
+                {!isLoggedIn && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="bg-white dark:bg-black border border-gray-200 dark:border-gray-700 p-6 rounded-sm mb-8 text-left shadow-sm"
+                    >
+                        <div className="flex items-start gap-4">
+                            <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-full">
+                                <UserPlus size={24} />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-lg mb-1">Create an Account</h3>
+                                <p className="text-sm text-gray-500 mb-4">
+                                    Create an account to track your order, save your details, and checkout faster next time.
+                                </p>
+                                <Link
+                                    href={`/register?email=${encodeURIComponent(email)}&flow=activate`}
+                                    className="inline-block bg-black dark:bg-white text-white dark:text-black px-6 py-2 text-sm font-bold uppercase tracking-wider hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                                >
+                                    Create Account
+                                </Link>
+                            </div>
                         </div>
-                        <div>
-                            <h3 className="font-bold text-lg mb-1">Create an Account</h3>
-                            <p className="text-sm text-gray-500 mb-4">
-                                Create an account to track your order, save your details, and checkout faster next time.
-                            </p>
-                            <Link
-                                href={`/register?email=${encodeURIComponent(email)}&flow=activate`}
-                                className="inline-block bg-black dark:bg-white text-white dark:text-black px-6 py-2 text-sm font-bold uppercase tracking-wider hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
-                            >
-                                Create Account
-                            </Link>
-                        </div>
-                    </div>
-                </motion.div>
+                    </motion.div>
+                )}
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -103,10 +107,10 @@ function SuccessContent() {
                     className="space-y-4"
                 >
                     <Link
-                        href="/account/orders"
+                        href={isLoggedIn ? "/account/orders" : "/login"}
                         className="inline-flex items-center justify-center bg-transparent border border-black dark:border-white text-black dark:text-white px-8 py-4 font-bold uppercase tracking-widest hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors w-full gap-2"
                     >
-                        <Package size={18} /> Track Your Order
+                        <Package size={18} /> {isLoggedIn ? 'Track Your Order' : 'Sign In to Track Order'}
                     </Link>
 
                     <Link

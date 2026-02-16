@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 
 export default function Register() {
@@ -21,18 +21,33 @@ function RegisterContent() {
     const emailParam = searchParams.get('email') || '';
     const isActivate = flow === 'activate';
     const router = useRouter();
-    const { login } = useAuth();
+    const { login, isLoggedIn } = useAuth();
+    const callbackUrl = searchParams.get('callbackUrl') || '/';
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    // Redirect if already logged in
+    useEffect(() => {
+        if (isLoggedIn) {
+            router.push(callbackUrl);
+        }
+    }, [isLoggedIn, router, callbackUrl]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         login();
-        router.push('/');
+        router.push(callbackUrl);
     };
 
     return (
-        <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center bg-gray-50 dark:bg-black/20">
+        <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center bg-gray-50 dark:bg-black/20 relative">
+            <Link
+                href="/"
+                className="absolute top-8 left-6 sm:left-8 inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black dark:hover:text-white transition-colors group"
+            >
+                <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                Return to Shopping
+            </Link>
             <div className="w-full max-w-md bg-white dark:bg-black p-8 md:p-12 border border-gray-100 dark:border-gray-800 shadow-xl shadow-black/5 dark:shadow-white/5 rounded-sm">
                 <div className="flex flex-col items-center mb-8">
                     <Image

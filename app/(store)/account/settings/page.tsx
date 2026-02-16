@@ -2,13 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
 import Image from 'next/image';
 import { Save, ShieldCheck, Mail, Lock, User, Phone, MapPin } from 'lucide-react';
 
 export default function AccountSettings() {
     const router = useRouter();
-    const { logout } = useAuth();
 
     // Auth State
     const [step, setStep] = useState<'verify' | 'otp' | 'edit'>('verify');

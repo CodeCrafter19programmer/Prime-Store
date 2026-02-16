@@ -22,7 +22,7 @@ export default function OrderDetail({ params }: { params: Promise<{ id: string }
                 </Link>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
                     <h1 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight">
-                        Order {decodeURIComponent(id)}
+                        Order #{id}
                     </h1>
                     <span className={`px-3 py-1 text-xs sm:text-sm font-bold uppercase rounded-md ${isDelivered
                         ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400'

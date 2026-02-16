@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, Suspense } from 'react';
-import { Eye, EyeOff, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, CheckCircle, ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 
 export default function ResetPassword() {
@@ -42,7 +42,14 @@ function ResetPasswordContent() {
 
     if (success) {
         return (
-            <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center bg-gray-50 dark:bg-black/20">
+            <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center bg-gray-50 dark:bg-black/20 relative">
+                <Link
+                    href="/login"
+                    className="absolute top-8 left-6 sm:left-8 inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black dark:hover:text-white transition-colors group"
+                >
+                    <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                    Back
+                </Link>
                 <div className="w-full max-w-md bg-white dark:bg-black p-8 md:p-12 border border-gray-100 dark:border-gray-800 shadow-xl shadow-black/5 dark:shadow-white/5 rounded-sm text-center">
                     <div className="w-20 h-20 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-green-500 text-green-500">
                         <CheckCircle size={32} />
@@ -63,7 +70,14 @@ function ResetPasswordContent() {
     }
 
     return (
-        <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center bg-gray-50 dark:bg-black/20">
+        <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center bg-gray-50 dark:bg-black/20 relative">
+            <Link
+                href="/login"
+                className="absolute top-8 left-6 sm:left-8 inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black dark:hover:text-white transition-colors group"
+            >
+                <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+                Back
+            </Link>
             <div className="w-full max-w-md bg-white dark:bg-black p-8 md:p-12 border border-gray-100 dark:border-gray-800 shadow-xl shadow-black/5 dark:shadow-white/5 rounded-sm">
 
                 {/* Branding */}

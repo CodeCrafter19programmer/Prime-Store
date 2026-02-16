@@ -5,9 +5,9 @@ import { ChevronRight } from 'lucide-react';
 
 export default function Orders() {
     const orders = [
-        { id: '#PRIME-8821', date: 'Feb 6, 2026', status: 'Delivered', total: '$165.00', items: 2, progress: 4 },
-        { id: '#PRIME-8750', date: 'Jan 22, 2026', status: 'Processing', total: '$85.00', items: 1, progress: 2 },
-        { id: '#PRIME-8620', date: 'Jan 15, 2026', status: 'Delivered', total: '$210.00', items: 3, progress: 4 },
+        { id: 'PRIME-8821', date: 'Feb 6, 2026', status: 'Delivered', total: '$165.00', items: 2, progress: 4 },
+        { id: 'PRIME-8750', date: 'Jan 22, 2026', status: 'Processing', total: '$85.00', items: 1, progress: 2 },
+        { id: 'PRIME-8620', date: 'Jan 15, 2026', status: 'Delivered', total: '$210.00', items: 3, progress: 4 },
     ];
 
     const progressSteps = ['Placed', 'Processing', 'Shipped', 'Delivered'];
@@ -35,7 +35,7 @@ export default function Orders() {
                     {/* Order Header */}
                     <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-5 border-b border-gray-100 dark:border-gray-800 pb-4">
                         <div>
-                            <h3 className="font-bold text-base sm:text-lg">{order.id}</h3>
+                            <h3 className="font-bold text-base sm:text-lg">#{order.id}</h3>
                             <p className="text-xs text-gray-500 mt-0.5">{order.date}</p>
                         </div>
                         <div className="flex items-center gap-3 sm:gap-4">
@@ -86,7 +86,7 @@ export default function Orders() {
                             {order.items} {order.items === 1 ? 'Item' : 'Items'}
                         </div>
                         <Link
-                            href={`/account/orders/${encodeURIComponent(order.id)}`}
+                            href={`/account/orders/${order.id}`}
                             className="text-sm font-bold flex items-center gap-1 hover:underline underline-offset-4 transition-colors"
                         >
                             View Order <ChevronRight size={16} />

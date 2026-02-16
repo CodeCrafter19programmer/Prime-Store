@@ -50,9 +50,7 @@ export default function Navbar() {
     const { isLoggedIn, logout } = useAuth();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const router = useRouter(); // usually already imported, but let me check lines 1-13.
-    // Line 10: import { usePathname } from 'next/navigation';
-    // I need to import useRouter if not already imported. Ah, line 10 only imports usePathname. I need to update imports too.
+    const router = useRouter();
 
     const handleSearchSubmit = (e: React.FormEvent | React.MouseEvent) => {
         e.preventDefault();

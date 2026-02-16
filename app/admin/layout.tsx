@@ -1,8 +1,9 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { LayoutDashboard, Package, ShoppingCart, Settings, LogOut, Users, BarChart2, PackageOpen } from 'lucide-react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function AdminLayout({
     children,
@@ -10,10 +11,31 @@ export default function AdminLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
+    const router = useRouter();
     const isLoginPage = pathname === '/admin/login';
+    const [isAuthed, setIsAuthed] = useState(false);
+    const [isChecking, setIsChecking] = useState(true);
+
+    useEffect(() => {
+        if (isLoginPage) {
+            setIsChecking(false);
+            return;
+        }
+        const session = localStorage.getItem('admin_session');
+        if (!session) {
+            router.push('/admin/login');
+        } else {
+            setIsAuthed(true);
+        }
+        setIsChecking(false);
+    }, [isLoginPage, router]);
 
     if (isLoginPage) {
         return <div className="min-h-screen bg-gray-50 flex items-center justify-center">{children}</div>;
+    }
+
+    if (isChecking || !isAuthed) {
+        return null;
     }
 
     const navItems = [
@@ -49,7 +71,13 @@ export default function AdminLayout({
                     })}
                 </nav>
                 <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 dark:border-gray-900">
-                    <button className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 w-full rounded-sm transition-colors">
+                    <button
+                        onClick={() => {
+                            localStorage.removeItem('admin_session');
+                            window.location.href = '/admin/login';
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 w-full rounded-sm transition-colors"
+                    >
                         <LogOut size={18} /> Sign Out
                     </button>
                 </div>

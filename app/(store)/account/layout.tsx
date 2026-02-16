@@ -26,13 +26,24 @@ export default function AccountLayout({
     // Protect Route
     useEffect(() => {
         if (!isLoading && !isLoggedIn) {
-            router.push('/login');
+            router.push(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
         }
     }, [isLoading, isLoggedIn, router]);
 
     // Don't render anything while checking auth or if not logged in
-    if (isLoading || !isLoggedIn) {
-        return null; // or a loading spinner
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-8 h-8 border-2 border-gray-200 dark:border-gray-800 border-t-black dark:border-t-white rounded-full animate-spin" />
+                    <p className="text-sm text-gray-400 uppercase tracking-widest">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!isLoggedIn) {
+        return null;
     }
 
     // Order detail pages (/account/orders/[id]) use a different layout

@@ -94,7 +94,7 @@ export default function AccountSidebar() {
                             {/* Drawer Navigation */}
                             <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                                 {navigation.map((item) => {
-                                    const isActive = pathname === item.href;
+                                    const isActive = item.href === '/account' ? pathname === '/account' : pathname.startsWith(item.href);
                                     const Icon = item.icon;
                                     return (
                                         <Link
@@ -158,7 +158,7 @@ export default function AccountSidebar() {
                 {/* Navigation Items */}
                 <nav className="flex-1 py-6 flex flex-col gap-2 px-3 overflow-x-hidden">
                     {navigation.map((item) => {
-                        const isActive = pathname === item.href;
+                        const isActive = item.href === '/account' ? pathname === '/account' : pathname.startsWith(item.href);
                         const Icon = item.icon;
 
                         return (

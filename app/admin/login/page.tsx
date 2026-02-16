@@ -15,6 +15,7 @@ export default function AdminLogin() {
         setLoading(true);
         // Mock login
         setTimeout(() => {
+            localStorage.setItem('admin_session', 'admin_token');
             router.push('/admin/dashboard');
         }, 1000);
     };
