@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
     LayoutDashboard,
     Package,
@@ -26,6 +26,7 @@ const navigation = [
 
 export default function AccountSidebar() {
     const pathname = usePathname();
+    const router = useRouter();
     const { logout } = useAuth();
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -54,6 +55,11 @@ export default function AccountSidebar() {
             document.body.style.overflow = '';
         };
     }, [isExpanded]);
+
+    const handleLogout = () => {
+        logout();
+        router.push('/');
+    };
 
     return (
         <>
@@ -112,7 +118,7 @@ export default function AccountSidebar() {
                             {/* Sign Out */}
                             <div className="p-4 border-t border-gray-100 dark:border-gray-800">
                                 <button
-                                    onClick={logout}
+                                    onClick={handleLogout}
                                     className="flex items-center gap-3 w-full px-3 py-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg text-sm font-medium transition-colors"
                                 >
                                     <LogOut size={20} />
@@ -190,7 +196,7 @@ export default function AccountSidebar() {
                 {/* Sign Out - Bottom */}
                 <div className="p-3 border-t border-gray-100 dark:border-gray-800 mt-auto">
                     <button
-                        onClick={logout}
+                        onClick={handleLogout}
                         className="w-full flex items-center gap-4 px-3 py-3 rounded-lg text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors group overflow-hidden"
                         title="Sign Out"
                     >
