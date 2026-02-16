@@ -4,12 +4,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Image from 'next/image';
-import AccountSidebar from '@/components/AccountSidebar';
-import { LogOut, Save, ShieldCheck, Mail, Lock, User, Phone, MapPin } from 'lucide-react';
+import { Save, ShieldCheck, Mail, Lock, User, Phone, MapPin } from 'lucide-react';
 
 export default function AccountSettings() {
     const router = useRouter();
-    const { logout } = useAuth(); // Assuming useAuth has user data, but if not we'll mock.
+    const { logout } = useAuth();
 
     // Auth State
     const [step, setStep] = useState<'verify' | 'otp' | 'edit'>('verify');
@@ -18,7 +17,7 @@ export default function AccountSettings() {
 
     // Form Data
     const [verificationData, setVerificationData] = useState({ email: '', password: '' });
-    const [otp, setOtp] = useState(['', '', '', '', '', '']); // Array for 6 boxes
+    const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const [profileData, setProfileData] = useState({
         name: 'John Doe',
         email: 'john.doe@example.com',
@@ -39,7 +38,6 @@ export default function AccountSettings() {
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         if (e.key === 'Backspace' && !otp[index] && index > 0) {
-            // Focus previous input on backspace if current is empty
             const prev = (e.currentTarget.previousSibling as HTMLInputElement);
             if (prev) prev.focus();
         }
@@ -50,12 +48,9 @@ export default function AccountSettings() {
         setIsLoading(true);
         setError('');
 
-        // Mock verification
         setTimeout(() => {
             if (verificationData.email && verificationData.password) {
-                // Determine if valid (mock: any non-empty)
                 setStep('otp');
-                // Simulate sending email (Silent in UI)
                 console.log('Verification code sent: 123456');
             } else {
                 setError('Please fill in all fields.');
@@ -74,7 +69,6 @@ export default function AccountSettings() {
         setTimeout(() => {
             if (code === '123456') {
                 setStep('edit');
-                // Pre-fill email from verification (or keep original profile email if they are just verifying identity)
                 setProfileData(prev => ({ ...prev, email: verificationData.email }));
             } else {
                 setError('Invalid verification code. Please try again.');
@@ -87,203 +81,205 @@ export default function AccountSettings() {
         e.preventDefault();
         setIsLoading(true);
 
-        // Save logic (mock)
         setTimeout(() => {
-            router.push('/account'); // Redirect to Account Overview
+            router.push('/account');
             setIsLoading(false);
         }, 1500);
     };
 
+    const inputBaseClass = "w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 outline-none focus:border-black dark:focus:border-white transition-colors rounded-lg text-sm";
+
     return (
-        <div className="min-h-screen pt-24 pb-20 px-4 max-w-7xl mx-auto">
-            <h1 className="text-4xl font-bold uppercase tracking-tight mb-2">Account Settings</h1>
-            <p className="text-gray-500 mb-12">Manage your personal information and security.</p>
+        <div className="max-w-2xl">
+            <div className="border border-gray-100 dark:border-gray-800 p-6 sm:p-8 rounded-lg bg-white dark:bg-gray-950">
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <AccountSidebar />
+                {/* Step 1: Verification */}
+                {step === 'verify' && (
+                    <form onSubmit={handleVerifySubmit} className="space-y-6">
+                        <div className="text-center mb-6 sm:mb-8">
+                            <ShieldCheck size={44} className="mx-auto mb-4 text-black dark:text-white" strokeWidth={1} />
+                            <h2 className="text-xl sm:text-2xl font-bold uppercase">Verify Identity</h2>
+                            <p className="text-gray-500 text-sm mt-2">To make changes, please confirm your credentials.</p>
+                        </div>
 
-                <div className="md:col-span-2">
-                    <div className="border border-gray-100 dark:border-gray-800 p-8 rounded-sm max-w-2xl">
-
-                        {/* Step 1: Verification */}
-                        {step === 'verify' && (
-                            <form onSubmit={handleVerifySubmit} className="space-y-6">
-                                <div className="text-center mb-8">
-                                    <ShieldCheck size={48} className="mx-auto mb-4 text-black dark:text-white" strokeWidth={1} />
-                                    <h2 className="text-2xl font-bold uppercase">Verify Identity</h2>
-                                    <p className="text-gray-500 text-sm mt-2">To make changes, please confirm your credentials.</p>
-                                </div>
-
-                                {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
-                                <div>
-                                    <label className="block text-xs font-bold uppercase tracking-wider mb-2">Email Address</label>
-                                    <div className="relative">
-                                        <Mail className="absolute left-3 top-3 text-gray-400" size={18} />
-                                        <input
-                                            type="email"
-                                            required
-                                            value={verificationData.email}
-                                            onChange={(e) => setVerificationData({ ...verificationData, email: e.target.value })}
-                                            className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 outline-none focus:border-black dark:focus:border-white transition-colors"
-                                            placeholder="Enter your email"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-xs font-bold uppercase tracking-wider mb-2">Current Password</label>
-                                    <div className="relative">
-                                        <Lock className="absolute left-3 top-3 text-gray-400" size={18} />
-                                        <input
-                                            type="password"
-                                            required
-                                            value={verificationData.password}
-                                            onChange={(e) => setVerificationData({ ...verificationData, password: e.target.value })}
-                                            className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 outline-none focus:border-black dark:focus:border-white transition-colors"
-                                            placeholder="Enter your password"
-                                        />
-                                    </div>
-                                </div>
-
-                                <button
-                                    type="submit"
-                                    disabled={isLoading}
-                                    className="w-full bg-black dark:bg-white text-white dark:text-black py-4 font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
-                                >
-                                    {isLoading ? 'Verifying...' : 'Verify & Continue'}
-                                </button>
-                            </form>
+                        {error && (
+                            <p className="text-red-500 text-sm text-center bg-red-50 dark:bg-red-950/30 py-2 rounded-lg" role="alert">
+                                {error}
+                            </p>
                         )}
 
-                        {/* Step 2: OTP */}
-                        {step === 'otp' && (
-                            <form onSubmit={handleOtpSubmit} className="space-y-6">
-                                <div className="text-center mb-8">
-                                    <Mail size={48} className="mx-auto mb-4 text-black dark:text-white" strokeWidth={1} />
-                                    <h2 className="text-2xl font-bold uppercase">Check your Email</h2>
-                                    <p className="text-gray-500 text-sm mt-2">We sent a verification code to <strong>{verificationData.email}</strong></p>
-                                </div>
+                        <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider mb-2">Email Address</label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-3 text-gray-400" size={18} />
+                                <input
+                                    type="email"
+                                    required
+                                    value={verificationData.email}
+                                    onChange={(e) => setVerificationData({ ...verificationData, email: e.target.value })}
+                                    className={inputBaseClass}
+                                    placeholder="Enter your email"
+                                />
+                            </div>
+                        </div>
 
-                                {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+                        <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider mb-2">Current Password</label>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-3 text-gray-400" size={18} />
+                                <input
+                                    type="password"
+                                    required
+                                    value={verificationData.password}
+                                    onChange={(e) => setVerificationData({ ...verificationData, password: e.target.value })}
+                                    className={inputBaseClass}
+                                    placeholder="Enter your password"
+                                />
+                            </div>
+                        </div>
 
-                                <div>
-                                    <label className="block text-xs font-bold uppercase tracking-wider mb-4 text-center">Verification Code</label>
-                                    <div className="flex gap-2 justify-center">
-                                        {otp.map((data, index) => (
-                                            <input
-                                                className="w-12 h-14 border border-gray-400 dark:border-gray-600 text-center text-xl font-bold rounded-sm focus:border-black dark:focus:border-white outline-none transition-colors bg-white dark:bg-gray-900 text-black dark:text-white"
-                                                type="text"
-                                                name="otp"
-                                                maxLength={1}
-                                                key={index}
-                                                value={data}
-                                                onChange={e => handleOtpChange(e.target, index)}
-                                                onKeyDown={e => handleKeyDown(e, index)}
-                                                onFocus={e => e.target.select()}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full bg-black dark:bg-white text-white dark:text-black py-3.5 sm:py-4 font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 rounded-lg text-sm"
+                        >
+                            {isLoading ? 'Verifying...' : 'Verify & Continue'}
+                        </button>
+                    </form>
+                )}
 
-                                <button
-                                    type="submit"
-                                    disabled={isLoading}
-                                    className="w-full bg-black dark:bg-white text-white dark:text-black py-4 font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
-                                >
-                                    {isLoading ? 'Checking...' : 'Confirm Code'}
-                                </button>
+                {/* Step 2: OTP */}
+                {step === 'otp' && (
+                    <form onSubmit={handleOtpSubmit} className="space-y-6">
+                        <div className="text-center mb-6 sm:mb-8">
+                            <Mail size={44} className="mx-auto mb-4 text-black dark:text-white" strokeWidth={1} />
+                            <h2 className="text-xl sm:text-2xl font-bold uppercase">Check your Email</h2>
+                            <p className="text-gray-500 text-sm mt-2">We sent a verification code to <strong>{verificationData.email}</strong></p>
+                        </div>
 
-                                <button
-                                    type="button"
-                                    onClick={() => setStep('verify')}
-                                    className="w-full text-xs text-gray-500 underline uppercase tracking-wider hover:text-black dark:hover:text-white"
-                                >
-                                    Go Back
-                                </button>
-                            </form>
+                        {error && (
+                            <p className="text-red-500 text-sm text-center bg-red-50 dark:bg-red-950/30 py-2 rounded-lg" role="alert">
+                                {error}
+                            </p>
                         )}
 
-                        {/* Step 3: Edit Profile */}
-                        {step === 'edit' && (
-                            <form onSubmit={handleProfileUpdate} className="space-y-6">
-                                <div className="text-center mb-8">
-                                    <Image
-                                        src="/logo.png"
-                                        alt="Prime"
-                                        width={100}
-                                        height={50}
-                                        className="mx-auto h-12 w-auto object-contain dark:invert mb-4"
+                        <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider mb-4 text-center">Verification Code</label>
+                            <div className="flex gap-2 sm:gap-3 justify-center">
+                                {otp.map((data, index) => (
+                                    <input
+                                        className="w-10 h-12 sm:w-12 sm:h-14 border border-gray-400 dark:border-gray-600 text-center text-lg sm:text-xl font-bold rounded-lg focus:border-black dark:focus:border-white outline-none transition-colors bg-white dark:bg-gray-900 text-black dark:text-white"
+                                        type="text"
+                                        name="otp"
+                                        maxLength={1}
+                                        key={index}
+                                        value={data}
+                                        onChange={e => handleOtpChange(e.target, index)}
+                                        onKeyDown={e => handleKeyDown(e, index)}
+                                        onFocus={e => e.target.select()}
+                                        inputMode="numeric"
+                                        autoComplete="one-time-code"
                                     />
-                                    <h2 className="text-2xl font-bold uppercase">Update Profile</h2>
-                                    <p className="text-gray-500 text-sm mt-2">Update your personal details below.</p>
-                                </div>
+                                ))}
+                            </div>
+                        </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label className="block text-xs font-bold uppercase tracking-wider mb-2">Full Name</label>
-                                        <div className="relative">
-                                            <User className="absolute left-3 top-3 text-gray-400" size={18} />
-                                            <input
-                                                type="text"
-                                                required
-                                                value={profileData.name}
-                                                onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 outline-none focus:border-black dark:focus:border-white transition-colors"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-bold uppercase tracking-wider mb-2">Phone Number</label>
-                                        <div className="relative">
-                                            <Phone className="absolute left-3 top-3 text-gray-400" size={18} />
-                                            <input
-                                                type="tel"
-                                                required
-                                                value={profileData.phone}
-                                                onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
-                                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 outline-none focus:border-black dark:focus:border-white transition-colors"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="md:col-span-2">
-                                        <label className="block text-xs font-bold uppercase tracking-wider mb-2">Email Address</label>
-                                        <div className="relative">
-                                            <Mail className="absolute left-3 top-3 text-gray-400" size={18} />
-                                            <input
-                                                type="email"
-                                                required
-                                                value={profileData.email}
-                                                onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 outline-none focus:border-black dark:focus:border-white transition-colors"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="md:col-span-2">
-                                        <label className="block text-xs font-bold uppercase tracking-wider mb-2">Delivery Address</label>
-                                        <div className="relative">
-                                            <MapPin className="absolute left-3 top-3 text-gray-400" size={18} />
-                                            <textarea
-                                                required
-                                                value={profileData.address}
-                                                onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
-                                                className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 outline-none focus:border-black dark:focus:border-white transition-colors h-24 resize-none"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full bg-black dark:bg-white text-white dark:text-black py-3.5 sm:py-4 font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 rounded-lg text-sm"
+                        >
+                            {isLoading ? 'Checking...' : 'Confirm Code'}
+                        </button>
 
-                                <button
-                                    type="submit"
-                                    disabled={isLoading}
-                                    className="w-full bg-black dark:bg-white text-white dark:text-black py-4 font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
-                                >
-                                    {isLoading ? 'Saving...' : <><Save size={20} /> Save Changes</>}
-                                </button>
-                            </form>
-                        )}
-                    </div>
-                </div>
+                        <button
+                            type="button"
+                            onClick={() => setStep('verify')}
+                            className="w-full text-xs text-gray-500 underline uppercase tracking-wider hover:text-black dark:hover:text-white py-2 min-h-[44px]"
+                        >
+                            Go Back
+                        </button>
+                    </form>
+                )}
+
+                {/* Step 3: Edit Profile */}
+                {step === 'edit' && (
+                    <form onSubmit={handleProfileUpdate} className="space-y-6">
+                        <div className="text-center mb-6 sm:mb-8">
+                            <Image
+                                src="/logo.png"
+                                alt="Prime"
+                                width={100}
+                                height={50}
+                                className="mx-auto h-10 sm:h-12 w-auto object-contain dark:invert mb-4"
+                            />
+                            <h2 className="text-xl sm:text-2xl font-bold uppercase">Update Profile</h2>
+                            <p className="text-gray-500 text-sm mt-2">Update your personal details below.</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                            <div>
+                                <label className="block text-xs font-bold uppercase tracking-wider mb-2">Full Name</label>
+                                <div className="relative">
+                                    <User className="absolute left-3 top-3 text-gray-400" size={18} />
+                                    <input
+                                        type="text"
+                                        required
+                                        value={profileData.name}
+                                        onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                                        className={inputBaseClass}
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold uppercase tracking-wider mb-2">Phone Number</label>
+                                <div className="relative">
+                                    <Phone className="absolute left-3 top-3 text-gray-400" size={18} />
+                                    <input
+                                        type="tel"
+                                        required
+                                        value={profileData.phone}
+                                        onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                                        className={inputBaseClass}
+                                    />
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label className="block text-xs font-bold uppercase tracking-wider mb-2">Email Address</label>
+                                <div className="relative">
+                                    <Mail className="absolute left-3 top-3 text-gray-400" size={18} />
+                                    <input
+                                        type="email"
+                                        required
+                                        value={profileData.email}
+                                        onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
+                                        className={inputBaseClass}
+                                    />
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label className="block text-xs font-bold uppercase tracking-wider mb-2">Delivery Address</label>
+                                <div className="relative">
+                                    <MapPin className="absolute left-3 top-3 text-gray-400" size={18} />
+                                    <textarea
+                                        required
+                                        value={profileData.address}
+                                        onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
+                                        className={`${inputBaseClass} h-24 resize-none`}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full bg-black dark:bg-white text-white dark:text-black py-3.5 sm:py-4 font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 rounded-lg text-sm"
+                        >
+                            {isLoading ? 'Saving...' : <><Save size={18} /> Save Changes</>}
+                        </button>
+                    </form>
+                )}
             </div>
         </div>
     );
