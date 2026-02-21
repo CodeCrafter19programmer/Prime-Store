@@ -5,7 +5,7 @@ import { jwtVerify } from 'jose';
 const secretKey = process.env.JWT_SECRET || 'a-very-secure-secret-fallback-key-for-admin-login';
 const key = new TextEncoder().encode(secretKey);
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
     // Only run this logic on /admin routes
     if (request.nextUrl.pathname.startsWith('/admin')) {
         // If navigating to the login page, bypass
