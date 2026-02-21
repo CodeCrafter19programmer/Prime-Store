@@ -1,23 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Lock, Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
+import { adminLogin } from '../actions';
 
 export default function AdminLogin() {
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
+    const [isPending, startTransition] = useTransition();
     const [showPassword, setShowPassword] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setLoading(true);
-        // Mock login
-        setTimeout(() => {
-            localStorage.setItem('admin_session', 'admin_token');
-            router.push('/admin/dashboard');
-        }, 1000);
+        setErrorMsg('');
+        const formData = new FormData(e.currentTarget);
+
+        startTransition(async () => {
+            const result = await adminLogin(formData);
+            if (result.success) {
+                router.push('/admin/dashboard');
+            } else {
+                setErrorMsg(result.error || 'Authentication failed');
+            }
+        });
     };
 
     return (
@@ -36,14 +43,20 @@ export default function AdminLogin() {
             </div>
 
             <form onSubmit={handleLogin} className="space-y-6">
+                {errorMsg && (
+                    <div className="bg-red-50 text-red-500 border border-red-200 text-sm font-bold p-3 rounded-sm text-center uppercase">
+                        {errorMsg}
+                    </div>
+                )}
                 <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Email</label>
-                    <input type="email" required className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
+                    <input name="email" type="email" required className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors" />
                 </div>
                 <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Password</label>
                     <div className="relative">
                         <input
+                            name="password"
                             type={showPassword ? "text" : "password"}
                             required
                             className="w-full bg-transparent border border-gray-300 dark:border-gray-700 p-3 outline-none focus:border-black dark:focus:border-white transition-colors pr-10"
@@ -58,10 +71,10 @@ export default function AdminLogin() {
                     </div>
                 </div>
                 <button
-                    disabled={loading}
-                    className="w-full bg-black dark:bg-white text-white dark:text-black py-4 font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50"
+                    disabled={isPending}
+                    className="w-full bg-black dark:bg-white text-white dark:text-black py-4 font-bold uppercase tracking-widest hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors disabled:opacity-50 flex items-center justify-center"
                 >
-                    {loading ? 'Authenticating...' : 'Sign In'}
+                    {isPending ? 'Authenticating...' : 'Sign In'}
                 </button>
             </form>
         </div>
