@@ -2,33 +2,45 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useData } from '@/context/DataContext';
-import { ChevronLeft, Save } from 'lucide-react';
+import { ChevronLeft, Save, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function NewProduct() {
     const router = useRouter();
-    const { addProduct } = useData();
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         price: '',
+        stock: '0',
         category: 'clothing',
         description: '',
-        image: ''
+        imageUrl: '' // Changed from image
     });
 
     const categories = ['clothing', 'accessories', 'footwear', 'jewelry', 'electronics'];
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        addProduct({
-            name: formData.name,
-            price: parseFloat(formData.price),
-            category: formData.category,
-            description: formData.description,
-            image: formData.image || 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1780&auto=format&fit=crop' // Placeholder default
-        });
-        router.push('/admin/products');
+        setIsSubmitting(true);
+
+        try {
+            const res = await fetch('/api/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (!res.ok) throw new Error('Failed to create product');
+
+            // Redirect to products list instantly after successful insert
+            router.push('/admin/products');
+        } catch (error) {
+            console.error('Error creating product:', error);
+            alert('Failed to save to database.');
+            setIsSubmitting(false); // Reset so they can try again
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -65,20 +77,6 @@ export default function NewProduct() {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold uppercase text-gray-700 dark:text-gray-300">Price ($)</label>
-                            <input
-                                required
-                                name="price"
-                                value={formData.price}
-                                onChange={handleChange}
-                                type="number"
-                                step="0.01"
-                                className="w-full bg-gray-50 dark:bg-black border border-gray-200 dark:border-gray-800 p-3 rounded-sm focus:outline-none focus:border-black dark:focus:border-white transition-colors"
-                                placeholder="0.00"
-                            />
-                        </div>
-
-                        <div className="space-y-2">
                             <label className="text-sm font-bold uppercase text-gray-700 dark:text-gray-300">Category</label>
                             <select
                                 name="category"
@@ -93,42 +91,74 @@ export default function NewProduct() {
                         </div>
 
                         <div className="space-y-2">
+                            <label className="text-sm font-bold uppercase text-gray-700 dark:text-gray-300">Price ($)</label>
+                            <input
+                                required
+                                name="price"
+                                value={formData.price}
+                                onChange={handleChange}
+                                type="number"
+                                step="0.01"
+                                className="w-full bg-gray-50 dark:bg-black border border-gray-200 dark:border-gray-800 p-3 rounded-sm focus:outline-none focus:border-black dark:focus:border-white transition-colors"
+                                placeholder="0.00"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-bold uppercase text-gray-700 dark:text-gray-300">Initial Stock</label>
+                            <input
+                                required
+                                name="stock"
+                                value={formData.stock}
+                                onChange={handleChange}
+                                type="number"
+                                className="w-full bg-gray-50 dark:bg-black border border-gray-200 dark:border-gray-800 p-3 rounded-sm focus:outline-none focus:border-black dark:focus:border-white transition-colors"
+                                placeholder="e.g. 50"
+                            />
+                        </div>
+
+                        <div className="space-y-2 md:col-span-2">
                             <label className="text-sm font-bold uppercase text-gray-700 dark:text-gray-300">Image URL</label>
                             <input
-                                name="image"
-                                value={formData.image}
+                                name="imageUrl"
+                                value={formData.imageUrl}
                                 onChange={handleChange}
                                 type="url"
                                 className="w-full bg-gray-50 dark:bg-black border border-gray-200 dark:border-gray-800 p-3 rounded-sm focus:outline-none focus:border-black dark:focus:border-white transition-colors"
                                 placeholder="https://example.com/image.jpg"
                             />
-                            <p className="text-xs text-gray-500">Enter a direct image link. If empty, a placeholder will be used.</p>
+                            <p className="text-xs text-gray-500">Enter a direct image link. (We'll build direct file uploads next phase)</p>
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-bold uppercase text-gray-700 dark:text-gray-300">Description</label>
+                        <label className="text-sm font-bold uppercase text-gray-700 dark:text-gray-300">Product Description</label>
                         <textarea
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
                             className="w-full bg-gray-50 dark:bg-black border border-gray-200 dark:border-gray-800 p-3 rounded-sm focus:outline-none focus:border-black dark:focus:border-white transition-colors h-32 resize-none"
-                            placeholder="Product details..."
+                            placeholder="A timeless luxury piece..."
                         />
                     </div>
 
                     <div className="pt-6 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-4">
                         <Link
                             href="/admin/products"
-                            className="px-6 py-3 text-sm font-bold text-gray-500 hover:text-black dark:hover:text-white transition-colors"
+                            className="px-6 py-3 text-sm font-bold text-gray-500 hover:text-black dark:hover:text-white transition-colors flex items-center"
                         >
                             Cancel
                         </Link>
                         <button
                             type="submit"
-                            className="flex items-center gap-2 bg-black dark:bg-white text-white dark:text-black px-8 py-3 text-sm font-bold uppercase tracking-wider hover:opacity-80 transition-opacity rounded-sm"
+                            disabled={isSubmitting}
+                            className="flex items-center gap-2 bg-black dark:bg-white text-white dark:text-black px-8 py-3 text-sm font-bold uppercase tracking-wider hover:opacity-80 transition-opacity rounded-sm disabled:opacity-50"
                         >
-                            <Save size={16} /> Save Product
+                            {isSubmitting ? (
+                                <><Loader2 className="animate-spin" size={16} /> Saving...</>
+                            ) : (
+                                <><Save size={16} /> Save Product</>
+                            )}
                         </button>
                     </div>
                 </form>
