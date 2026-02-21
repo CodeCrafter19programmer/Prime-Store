@@ -7,9 +7,8 @@ export default function Hero() {
         <div className="relative h-screen w-full flex items-center justify-center overflow-hidden">
             {/* Background with Overlay */}
             <div className="absolute inset-0 bg-gray-200 dark:bg-gray-900">
-                {/* Placeholder Image from Unsplash */}
                 <div
-                    className="absolute inset-0 bg-gray-800"
+                    className="absolute inset-0 bg-[url('/images/hero-main.jpg')] bg-cover bg-center"
                 />
                 <div className="absolute inset-0 bg-black/40" />
             </div>
