@@ -7,7 +7,7 @@ export default function AdminDashboard() {
     const { orders, products } = useData();
 
     // Calculate Stats
-    const totalRevenue = orders.reduce((acc, order) => acc + order.total, 0);
+    const totalRevenue = orders.reduce((acc, order) => acc + order.totalAmount, 0);
     const totalOrders = orders.length;
     const totalProducts = products.length;
 
@@ -56,18 +56,18 @@ export default function AdminDashboard() {
                         <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                             {orders.slice(0, 5).map((order) => (
                                 <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                    <td className="px-6 py-4 font-medium">#{order.id}</td>
+                                    <td className="px-6 py-4 font-medium">{order.orderNumber}</td>
                                     <td className="px-6 py-4">{order.customerName}</td>
                                     <td className="px-6 py-4 text-gray-500">{new Date(order.date).toLocaleDateString()}</td>
                                     <td className="px-6 py-4">
-                                        <span className={`text-xs px-2 py-1 rounded-full font-bold uppercase ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                                            order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                                        <span className={`text-xs px-2 py-1 rounded-full font-bold uppercase ${order.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
+                                            order.status === 'PROCESSING' ? 'bg-blue-100 text-blue-800' :
                                                 'bg-yellow-100 text-yellow-800'
                                             }`}>
                                             {order.status}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-right font-medium">${order.total.toFixed(2)}</td>
+                                    <td className="px-6 py-4 text-right font-medium">${order.totalAmount.toFixed(2)}</td>
                                 </tr>
                             ))}
                             {orders.length === 0 && (

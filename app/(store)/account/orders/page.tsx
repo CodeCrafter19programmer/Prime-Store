@@ -2,23 +2,20 @@
 
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
+import { useData, Order } from '@/context/DataContext';
 
 export default function Orders() {
-    const orders = [
-        { id: 'PRIME-8821', date: 'Feb 6, 2026', status: 'Delivered', total: '$165.00', items: 2, progress: 4 },
-        { id: 'PRIME-8750', date: 'Jan 22, 2026', status: 'Processing', total: '$85.00', items: 1, progress: 2 },
-        { id: 'PRIME-8620', date: 'Jan 15, 2026', status: 'Delivered', total: '$210.00', items: 3, progress: 4 },
-    ];
+    const { orders } = useData();
 
     const progressSteps = ['Placed', 'Processing', 'Shipped', 'Delivered'];
 
     const getStatusStyles = (status: string) => {
         switch (status) {
-            case 'Delivered':
+            case 'DELIVERED':
                 return 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400';
-            case 'Processing':
+            case 'PROCESSING':
                 return 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-400';
-            case 'Shipped':
+            case 'SHIPPED':
                 return 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-400';
             default:
                 return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400';
@@ -27,7 +24,7 @@ export default function Orders() {
 
     return (
         <div className="space-y-4 sm:space-y-6">
-            {orders.map((order) => (
+            {orders.map((order: Order) => (
                 <div
                     key={order.id}
                     className="border border-gray-100 dark:border-gray-800 p-5 sm:p-6 rounded-lg bg-white dark:bg-gray-950 hover:shadow-sm transition-shadow"
@@ -35,22 +32,24 @@ export default function Orders() {
                     {/* Order Header */}
                     <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-5 border-b border-gray-100 dark:border-gray-800 pb-4">
                         <div>
-                            <h3 className="font-bold text-base sm:text-lg">#{order.id}</h3>
-                            <p className="text-xs text-gray-500 mt-0.5">{order.date}</p>
+                            <h3 className="font-bold text-base sm:text-lg">{order.orderNumber}</h3>
+                            <p className="text-xs text-gray-500 mt-0.5">{new Date(order.date).toLocaleDateString()}</p>
                         </div>
                         <div className="flex items-center gap-3 sm:gap-4">
                             <span className={`text-xs px-2.5 py-1 font-bold uppercase rounded-md ${getStatusStyles(order.status)}`}>
                                 {order.status}
                             </span>
-                            <span className="font-bold text-sm sm:text-base">{order.total}</span>
+                            <span className="font-bold text-sm sm:text-base">${order.totalAmount.toFixed(2)}</span>
                         </div>
                     </div>
 
-                    {/* Order Progress */}
                     <div className="flex items-center gap-0 mb-5 py-1">
                         {progressSteps.map((step, index) => {
-                            const isCompleted = index < order.progress;
-                            const isCurrent = index === order.progress - 1;
+                            // map progress state: PENDING=1, PROCESSING=2, SHIPPED=3, DELIVERED=4
+                            const progressMap: Record<string, number> = { PENDING: 1, PROCESSING: 2, SHIPPED: 3, DELIVERED: 4, CANCELLED: 0 };
+                            const orderProgress = progressMap[order.status] || 0;
+                            const isCompleted = index < orderProgress;
+                            const isCurrent = index === orderProgress - 1;
                             return (
                                 <div key={step} className="flex items-center flex-1 last:flex-initial">
                                     <div className="flex flex-col items-center">
@@ -69,7 +68,7 @@ export default function Orders() {
                                         </span>
                                     </div>
                                     {index < progressSteps.length - 1 && (
-                                        <div className={`flex-1 h-px mx-1 mb-0 sm:mb-3 ${isCompleted && index < order.progress - 1
+                                        <div className={`flex-1 h-px mx-1 mb-0 sm:mb-3 ${isCompleted && index < orderProgress - 1
                                             ? 'bg-black dark:bg-white'
                                             : 'bg-gray-200 dark:bg-gray-800'
                                             }`}
@@ -83,7 +82,7 @@ export default function Orders() {
                     {/* Footer */}
                     <div className="flex justify-between items-center">
                         <div className="text-sm text-gray-500">
-                            {order.items} {order.items === 1 ? 'Item' : 'Items'}
+                            {order.items?.length || 0} {(order.items?.length === 1) ? 'Item' : 'Items'}
                         </div>
                         <Link
                             href={`/account/orders/${order.id}`}

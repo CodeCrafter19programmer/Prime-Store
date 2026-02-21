@@ -35,7 +35,7 @@ export default function AdminOrders() {
                         <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                             {orders.map((order) => (
                                 <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                                    <td className="px-6 py-4 font-medium">#{order.id}</td>
+                                    <td className="px-6 py-4 font-medium">{order.orderNumber}</td>
                                     <td className="px-6 py-4">
                                         <div className="font-bold">{order.customerName}</div>
                                         <div className="text-xs text-gray-500">{order.email}</div>
@@ -45,20 +45,20 @@ export default function AdminOrders() {
                                         <select
                                             value={order.status}
                                             onChange={(e) => updateOrderStatus(order.id, e.target.value as any)}
-                                            className={`text-xs px-2 py-1 rounded-full font-bold uppercase border-none focus:ring-0 cursor-pointer ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                                                    order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                                                        order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                                                            'bg-yellow-100 text-yellow-800'
+                                            className={`text-xs px-2 py-1 rounded-full font-bold uppercase border-none focus:ring-0 cursor-pointer ${order.status === 'DELIVERED' ? 'bg-green-100 text-green-800' :
+                                                order.status === 'PROCESSING' ? 'bg-blue-100 text-blue-800' :
+                                                    order.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
+                                                        'bg-yellow-100 text-yellow-800'
                                                 }`}
                                         >
-                                            <option value="pending">Pending</option>
-                                            <option value="processing">Processing</option>
-                                            <option value="shipped">Shipped</option>
-                                            <option value="delivered">Delivered</option>
-                                            <option value="cancelled">Cancelled</option>
+                                            <option value="PENDING">Pending</option>
+                                            <option value="PROCESSING">Processing</option>
+                                            <option value="SHIPPED">Shipped</option>
+                                            <option value="DELIVERED">Delivered</option>
+                                            <option value="CANCELLED">Cancelled</option>
                                         </select>
                                     </td>
-                                    <td className="px-6 py-4 text-right font-medium">${order.total.toFixed(2)}</td>
+                                    <td className="px-6 py-4 text-right font-medium">${order.totalAmount.toFixed(2)}</td>
                                     <td className="px-6 py-4 text-right">
                                         <button className="text-gray-400 hover:text-black dark:hover:text-white transition-colors">
                                             <Eye size={18} />

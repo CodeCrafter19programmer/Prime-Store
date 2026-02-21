@@ -4,15 +4,15 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, MapPin, Phone } from 'lucide-react'; // Removed CreditCard, etc.
+import { ChevronRight, MapPin, Phone, Loader2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
-import { useData } from '@/context/DataContext';
 
 export default function Checkout() {
     const router = useRouter();
     const { items: cartItems, subtotal: cartTotal, clearCart } = useCart();
-    const { addOrder } = useData();
-    // Form State
+
+    // Form and Submission State
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
         firstName: '',
@@ -40,42 +40,68 @@ export default function Checkout() {
         }
     }, [formData.address, formData.city]);
 
-    const handleWhatsAppOrder = (e: React.FormEvent) => {
+    const handleWhatsAppOrder = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
-        // 1. Create Order in Admin Dashboard (Local State)
-        addOrder({
-            customerName: `${formData.firstName} ${formData.lastName}`,
-            email: formData.email,
-            total: cartTotal,
-            items: cartItems.map(i => ({ id: i.id, name: i.name, quantity: i.quantity, price: i.price }))
-        });
+        try {
+            // 1. Send Order to Live DB
+            const payload = {
+                customerName: `${formData.firstName} ${formData.lastName}`,
+                email: formData.email,
+                address: formData.address,
+                city: formData.city,
+                phone: formData.phone,
+                totalAmount: cartTotal,
+                items: cartItems.map(item => ({
+                    productId: item.id,
+                    quantity: item.quantity,
+                    price: item.price,
+                    size: item.size,
+                    color: item.color
+                }))
+            };
 
-        // 2. Construct WhatsApp Message
-        let message = `*New Order Request*\n\n`;
-        message += `*Customer Details:*\n`;
-        message += `Name: ${formData.firstName} ${formData.lastName}\n`;
-        message += `Phone: ${formData.phone}\n`;
-        message += `Email: ${formData.email}\n`;
-        message += `Address: ${formData.address}, ${formData.city}\n\n`;
+            const res = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
-        message += `*Order Summary:*\n`;
-        cartItems.forEach(item => {
-            message += `- ${item.name} (${item.size || 'N/A'}) x${item.quantity} - $${item.price * item.quantity}\n`;
-        });
+            if (!res.ok) throw new Error('Order creation failed');
+            const newOrder = await res.json();
 
-        message += `\n*Total: $${cartTotal.toFixed(2)}*\n`;
-        message += `--------------------------------\n`;
-        message += `Please confirm shipping availability and payment methods.`;
+            // 2. Construct WhatsApp Message with Secure Order ID
+            let message = `*New Order Request - ${newOrder.orderNumber}*\n\n`;
+            message += `*Customer Details:*\n`;
+            message += `Name: ${formData.firstName} ${formData.lastName}\n`;
+            message += `Phone: ${formData.phone}\n`;
+            message += `Email: ${formData.email}\n`;
+            message += `Address: ${formData.address}, ${formData.city}\n\n`;
 
-        const phoneNumber = '256778087986'; // Updated WhatsApp number
-        const encodedMessage = encodeURIComponent(message);
-        // 3. Open WhatsApp
-        window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+            message += `*Order Summary:*\n`;
+            cartItems.forEach(item => {
+                message += `- ${item.name} (${item.size || 'N/A'}) x${item.quantity} - $${item.price * item.quantity}\n`;
+            });
 
-        // 4. Clear Cart & Redirect
-        clearCart();
-        router.push('/');
+            message += `\n*Total: $${cartTotal.toFixed(2)}*\n`;
+            message += `--------------------------------\n`;
+            message += `Please confirm shipping availability and payment methods.`;
+
+            const phoneNumber = '256778087986'; // Updated WhatsApp number
+            const encodedMessage = encodeURIComponent(message);
+            // 3. Open WhatsApp
+            window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+
+            // 4. Clear Cart & Redirect
+            clearCart();
+            router.push('/');
+        } catch (error) {
+            console.error('Checkout error:', error);
+            alert('Something went wrong communicating with the server. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -197,10 +223,14 @@ export default function Checkout() {
                             <button
                                 form="whatsapp-form"
                                 type="submit"
-                                disabled={cartItems.length === 0}
+                                disabled={cartItems.length === 0 || isSubmitting}
                                 className="w-full bg-[#25D366] text-white py-4 font-bold uppercase tracking-widest hover:bg-[#128C7E] transition-colors flex items-center justify-center gap-3 shadow-lg shadow-green-500/20 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                <Phone size={20} /> Order via WhatsApp
+                                {isSubmitting ? (
+                                    <><Loader2 className="animate-spin" size={20} /> Processing...</>
+                                ) : (
+                                    <><Phone size={20} /> Order via WhatsApp</>
+                                )}
                             </button>
                             <p className="text-[10px] text-gray-400 text-center mt-4">
                                 You will be redirected to WhatsApp to complete your order details with our team.

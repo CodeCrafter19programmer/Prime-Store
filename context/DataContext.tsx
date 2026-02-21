@@ -5,16 +5,24 @@ import { Product } from '@/models/products';
 
 export interface Order {
     id: string;
+    orderNumber: string;
     customerName: string;
     email: string;
-    total: number;
-    status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+    address: string;
+    city: string;
+    phone: string;
+    totalAmount: number;
+    status: 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED';
     date: string;
     items: {
         id: string;
+        productId: string;
         name: string;
+        imageUrl: string;
         quantity: number;
         price: number;
+        size?: string;
+        color?: string;
     }[];
 }
 
@@ -24,7 +32,7 @@ interface DataContextType {
     addProduct: (product: Omit<Product, 'id'>) => void;
     updateProduct: (id: string, updates: Partial<Product>) => void;
     deleteProduct: (id: string) => void;
-    addOrder: (order: Omit<Order, 'id' | 'date' | 'status'>) => void;
+    addOrder: (order: any) => void;
     updateOrderStatus: (id: string, status: Order['status']) => void;
 }
 
@@ -51,35 +59,28 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
         fetchLiveProducts();
 
-        // Load orders (still mocked for now until Phase 4 Order API)
-        const savedOrders = localStorage.getItem('prime-orders');
-        if (savedOrders) {
-            setOrders(JSON.parse(savedOrders));
-        } else {
-            // Seed some mock orders for demo
-            setOrders([
-                {
-                    id: 'ORD-001',
-                    customerName: 'John Doe',
-                    email: 'john@example.com',
-                    total: 120,
-                    status: 'delivered',
-                    date: new Date().toISOString(),
-                    items: [{ id: '1', name: 'Classic Tee', quantity: 2, price: 60 }]
+        const fetchLiveOrders = async () => {
+            try {
+                const res = await fetch('/api/orders');
+                if (res.ok) {
+                    const data = await res.json();
+                    setOrders(data);
                 }
-            ]);
-        }
+            } catch (error) {
+                console.error('Failed to fetch live orders', error);
+            }
+        };
+
+        fetchLiveProducts();
+        fetchLiveOrders();
         setIsLoaded(true);
     }, []);
 
     // Save Orders on Change
 
 
-    useEffect(() => {
-        if (isLoaded) {
-            localStorage.setItem('prime-orders', JSON.stringify(orders));
-        }
-    }, [orders, isLoaded]);
+    // Removed localStorage hooks entirely for live data
+
 
     const addProduct = (newProduct: Omit<Product, 'id'>) => {
         const product = { ...newProduct, id: Math.random().toString(36).substr(2, 9) };
@@ -94,18 +95,24 @@ export function DataProvider({ children }: { children: ReactNode }) {
         setProducts(prev => prev.filter(p => p.id !== id));
     };
 
-    const addOrder = (newOrder: Omit<Order, 'id' | 'date' | 'status'>) => {
-        const order: Order = {
-            ...newOrder,
-            id: `ORD-${Math.floor(Math.random() * 10000)}`,
-            date: new Date().toISOString(),
-            status: 'pending'
-        };
+    const addOrder = (order: Order) => {
         setOrders(prev => [order, ...prev]);
     };
 
-    const updateOrderStatus = (id: string, status: Order['status']) => {
+    const updateOrderStatus = async (id: string, status: Order['status']) => {
+        // Optimistic UI updates
         setOrders(prev => prev.map(o => o.id === id ? { ...o, status } : o));
+
+        try {
+            await fetch(`/api/orders/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+        } catch (error) {
+            console.error('Failed to update order status natively', error);
+            // In a real app we'd revert the optimistic update here if it failed
+        }
     };
 
     return (
