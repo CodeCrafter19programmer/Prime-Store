@@ -8,6 +8,7 @@ import Link from 'next/link';
 export default function NewProduct() {
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [imageFile, setImageFile] = useState<File | null>(null);
     const [formData, setFormData] = useState({
         name: '',
         price: '',
@@ -24,12 +25,33 @@ export default function NewProduct() {
         setIsSubmitting(true);
 
         try {
+            // 1. Upload file if it exists
+            let finalImageUrl = formData.imageUrl;
+
+            if (imageFile) {
+                const fileData = new FormData();
+                fileData.append('file', imageFile);
+
+                const uploadRes = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: fileData
+                });
+
+                if (!uploadRes.ok) throw new Error('Failed to upload image file');
+                const uploadJson = await uploadRes.json();
+                finalImageUrl = uploadJson.url;
+            }
+
+            // 2. Transact product creation
+            const payload = {
+                ...formData,
+                imageUrl: finalImageUrl
+            };
+
             const res = await fetch('/api/products', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
             });
 
             if (!res.ok) throw new Error('Failed to create product');
@@ -46,6 +68,12 @@ export default function NewProduct() {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setImageFile(e.target.files[0]);
+        }
     };
 
     return (
@@ -118,16 +146,33 @@ export default function NewProduct() {
                         </div>
 
                         <div className="space-y-2 md:col-span-2">
-                            <label className="text-sm font-bold uppercase text-gray-700 dark:text-gray-300">Image URL</label>
-                            <input
-                                name="imageUrl"
-                                value={formData.imageUrl}
-                                onChange={handleChange}
-                                type="url"
-                                className="w-full bg-gray-50 dark:bg-black border border-gray-200 dark:border-gray-800 p-3 rounded-sm focus:outline-none focus:border-black dark:focus:border-white transition-colors"
-                                placeholder="https://example.com/image.jpg"
-                            />
-                            <p className="text-xs text-gray-500">Enter a direct image link. (We'll build direct file uploads next phase)</p>
+                            <label className="text-sm font-bold uppercase text-gray-700 dark:text-gray-300">Product Image</label>
+
+                            <div className="flex flex-col gap-4">
+                                {/* Native Upload */}
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    className="w-full bg-gray-50 dark:bg-black border border-gray-200 dark:border-gray-800 p-2 rounded-sm focus:outline-none focus:border-black dark:focus:border-white transition-colors text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-gray-200 file:text-black dark:file:bg-white dark:file:text-black hover:file:bg-gray-300"
+                                />
+
+                                <div className="flex items-center gap-4">
+                                    <span className="h-px bg-gray-200 dark:bg-gray-800 flex-1"></span>
+                                    <span className="text-xs uppercase text-gray-400 font-bold tracking-wider">OR PASTE URL</span>
+                                    <span className="h-px bg-gray-200 dark:bg-gray-800 flex-1"></span>
+                                </div>
+
+                                {/* External Default URL fallback */}
+                                <input
+                                    name="imageUrl"
+                                    value={formData.imageUrl}
+                                    onChange={handleChange}
+                                    type="url"
+                                    className="w-full bg-gray-50 dark:bg-black border border-gray-200 dark:border-gray-800 p-3 rounded-sm focus:outline-none focus:border-black dark:focus:border-white transition-colors text-sm"
+                                    placeholder="https://example.com/image.jpg"
+                                />
+                            </div>
                         </div>
                     </div>
 
