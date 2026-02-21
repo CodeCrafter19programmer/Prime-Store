@@ -61,8 +61,8 @@ export default function AdminDashboard() {
                                     <td className="px-6 py-4 text-gray-500">{new Date(order.date).toLocaleDateString()}</td>
                                     <td className="px-6 py-4">
                                         <span className={`text-xs px-2 py-1 rounded-full font-bold uppercase ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                                                order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                                                    'bg-yellow-100 text-yellow-800'
+                                            order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                                                'bg-yellow-100 text-yellow-800'
                                             }`}>
                                             {order.status}
                                         </span>
@@ -90,7 +90,7 @@ export default function AdminDashboard() {
                         {products.slice(0, 3).map((product) => (
                             <div key={product.id} className="flex items-center gap-4">
                                 <div className="w-12 h-12 bg-gray-200 rounded-sm flex-shrink-0 overflow-hidden relative">
-                                    <img src={product.image} alt={product.name} className="object-cover w-full h-full" />
+                                    <img src={product.imageUrl} alt={product.name} className="object-cover w-full h-full" />
                                 </div>
                                 <div className="flex-1">
                                     <h4 className="font-bold text-sm">{product.name}</h4>

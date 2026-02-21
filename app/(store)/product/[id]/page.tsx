@@ -44,7 +44,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                 <div className="space-y-4">
                     <div className="relative aspect-[3/4] bg-gray-100 dark:bg-gray-800 overflow-hidden rounded-sm">
                         <Image
-                            src={product.image}
+                            src={product.imageUrl}
                             alt={product.name}
                             fill
                             className="object-cover"
@@ -89,13 +89,13 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                         <button
                             onClick={(e) => {
                                 const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                                startAnimation(rect, product.image);
+                                startAnimation(rect, product.imageUrl);
 
                                 addItem({
                                     id: product.id,
                                     name: product.name,
                                     price: product.price,
-                                    image: product.image,
+                                    imageUrl: product.imageUrl,
                                     size: selectedSize
                                 });
                             }}

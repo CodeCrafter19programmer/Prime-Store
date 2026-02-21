@@ -22,7 +22,7 @@ async function main() {
                 name: item.name,
                 price: item.price,
                 category: item.category,
-                imageUrl: item.image,
+                imageUrl: item.imageUrl,
                 description: item.description || 'A timeless Prime Store piece.',
                 stock: 50, // Default stock assigned for demo
                 isArchived: false,

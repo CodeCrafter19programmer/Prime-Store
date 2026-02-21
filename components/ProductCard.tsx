@@ -9,7 +9,7 @@ interface Product {
     name: string;
     price: number;
     category: string;
-    image: string;
+    imageUrl: string;
 }
 
 import { useCart } from '@/context/CartContext';
@@ -27,13 +27,13 @@ export default function ProductCard({ product }: { product: Product }) {
         e.preventDefault();
 
         const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-        startAnimation(rect, product.image);
+        startAnimation(rect, product.imageUrl);
 
         addItem({
             id: product.id,
             name: product.name,
             price: product.price,
-            image: product.image,
+            imageUrl: product.imageUrl,
         });
     };
 
@@ -51,7 +51,7 @@ export default function ProductCard({ product }: { product: Product }) {
         <Link href={`/product/${product.id}`} className="group block">
             <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-800 mb-4 rounded-sm">
                 <Image
-                    src={product.image}
+                    src={product.imageUrl}
                     alt={product.name}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"

@@ -4,13 +4,13 @@ import { createContext, useContext, useState, useRef, ReactNode, useEffect } fro
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface CartAnimationContextType {
-    startAnimation: (rect: DOMRect, image: string) => void;
+    startAnimation: (rect: DOMRect, imageUrl: string) => void;
 }
 
 const CartAnimationContext = createContext<CartAnimationContextType | undefined>(undefined);
 
 export function CartAnimationProvider({ children }: { children: ReactNode }) {
-    const [animation, setAnimation] = useState<{ rect: DOMRect; image: string; id: number } | null>(null);
+    const [animation, setAnimation] = useState<{ rect: DOMRect; imageUrl: string; id: number } | null>(null);
     const [cartRect, setCartRect] = useState<DOMRect | null>(null);
 
     // Update cart rect on resize/scroll or periodically
@@ -32,11 +32,11 @@ export function CartAnimationProvider({ children }: { children: ReactNode }) {
         };
     }, []);
 
-    const startAnimation = (rect: DOMRect, image: string) => {
+    const startAnimation = (rect: DOMRect, imageUrl: string) => {
         const el = document.getElementById('cart-icon-container');
         if (el) setCartRect(el.getBoundingClientRect()); // Refresh to be safe
 
-        setAnimation({ rect, image, id: Date.now() });
+        setAnimation({ rect, imageUrl, id: Date.now() });
     };
 
     return (
@@ -48,7 +48,7 @@ export function CartAnimationProvider({ children }: { children: ReactNode }) {
                         key={animation.id}
                         startRect={animation.rect}
                         endRect={cartRect}
-                        image={animation.image}
+                        imageUrl={animation.imageUrl}
                         onComplete={() => setAnimation(null)}
                     />
                 )}
@@ -57,10 +57,10 @@ export function CartAnimationProvider({ children }: { children: ReactNode }) {
     );
 }
 
-function FlyingItem({ startRect, endRect, image, onComplete }: { startRect: DOMRect; endRect: DOMRect; image: string; onComplete: () => void }) {
+function FlyingItem({ startRect, endRect, imageUrl, onComplete }: { startRect: DOMRect; endRect: DOMRect; imageUrl: string; onComplete: () => void }) {
     return (
         <motion.img
-            src={image}
+            src={imageUrl}
             initial={{
                 position: 'fixed',
                 top: startRect.top,

@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { PRODUCTS, Product } from '@/models/products';
+import { Product } from '@/models/products';
 
 export interface Order {
     id: string;
@@ -37,15 +37,21 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
     // Initial Load
     useEffect(() => {
-        // Load products (combine mock + local storage if any)
-        const savedProducts = localStorage.getItem('prime-products');
-        if (savedProducts) {
-            setProducts(JSON.parse(savedProducts));
-        } else {
-            setProducts(PRODUCTS); // Default mock data
-        }
+        const fetchLiveProducts = async () => {
+            try {
+                const res = await fetch('/api/products');
+                if (res.ok) {
+                    const data = await res.json();
+                    setProducts(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch live products', error);
+            }
+        };
 
-        // Load orders
+        fetchLiveProducts();
+
+        // Load orders (still mocked for now until Phase 4 Order API)
         const savedOrders = localStorage.getItem('prime-orders');
         if (savedOrders) {
             setOrders(JSON.parse(savedOrders));
@@ -66,12 +72,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
         setIsLoaded(true);
     }, []);
 
-    // Save on Change
-    useEffect(() => {
-        if (isLoaded) {
-            localStorage.setItem('prime-products', JSON.stringify(products));
-        }
-    }, [products, isLoaded]);
+    // Save Orders on Change
+
 
     useEffect(() => {
         if (isLoaded) {

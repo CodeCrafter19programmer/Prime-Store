@@ -10,28 +10,28 @@ const FEATURED_PRODUCTS = [
     name: 'Smart Knit Runner',
     price: 145.00,
     category: 'Footwear',
-    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1780&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1780&auto=format&fit=crop'
   },
   {
     id: '2',
     name: 'Tech Fleece Hoodie',
     price: 120.00,
     category: 'Men',
-    image: 'https://images.unsplash.com/photo-1544642899-f0d6e5f6ed6f?q=80&w=1887&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1544642899-f0d6e5f6ed6f?q=80&w=1887&auto=format&fit=crop'
   },
   {
     id: '3',
     name: 'Minimalist Chrono',
     price: 185.00,
     category: 'Watches',
-    image: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?q=80&w=1780&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?q=80&w=1780&auto=format&fit=crop'
   },
   {
     id: '4',
     name: 'Connected Ring',
     price: 295.00,
     category: 'Wearable Tech',
-    image: 'https://images.unsplash.com/photo-1576053139778-7e32f2ae3cfd?q=80&w=1780&auto=format&fit=crop'
+    imageUrl: 'https://images.unsplash.com/photo-1576053139778-7e32f2ae3cfd?q=80&w=1780&auto=format&fit=crop'
   },
 ];
 

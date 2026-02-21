@@ -37,7 +37,7 @@ export default function Wishlist() {
                 <div key={product.id} className="group relative">
                     <div className="relative aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-800 mb-3 rounded-lg">
                         <img
-                            src={product.image}
+                            src={product.imageUrl}
                             alt={product.name}
                             className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700"
                         />

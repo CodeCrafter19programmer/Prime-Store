@@ -158,12 +158,11 @@ export default function Checkout() {
                             <div className="space-y-4 mb-8 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
                                 {cartItems.map((item) => (
                                     <div key={`${item.id}-${item.size}`} className="flex gap-4">
-                                        <div className="relative w-16 h-20 bg-gray-100 dark:bg-gray-800 rounded-sm overflow-hidden flex-shrink-0">
-                                            <Image
-                                                src={item.image}
+                                        <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-sm overflow-hidden relative border border-gray-200 dark:border-gray-800">
+                                            <img
+                                                src={item.imageUrl}
                                                 alt={item.name}
-                                                fill
-                                                className="object-cover"
+                                                className="object-cover w-full h-full"
                                             />
                                             <span className="absolute top-0 right-0 bg-black text-white text-[10px] h-5 w-5 flex items-center justify-center rounded-bl-md font-bold">{item.quantity}</span>
                                         </div>

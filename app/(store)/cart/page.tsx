@@ -24,11 +24,10 @@ export default function Cart() {
                             <div key={`${item.id}-${item.size}-${item.color}`} className="flex gap-6 border-b border-gray-100 dark:border-gray-800 pb-8">
                                 {/* Image */}
                                 <div className="relative w-24 h-32 bg-gray-200 dark:bg-gray-800 rounded-sm flex-shrink-0 overflow-hidden">
-                                    <Image
-                                        src={item.image}
+                                    <img
+                                        src={item.imageUrl}
                                         alt={item.name}
-                                        fill
-                                        className="object-cover"
+                                        className="object-cover w-full h-full"
                                     />
                                 </div>
                                 <div className="flex-1">
