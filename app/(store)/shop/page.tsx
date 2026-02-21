@@ -154,39 +154,44 @@ function ShopContent() {
             return {
                 title: `${collectionParam} Collection`,
                 desc: 'Curated just for you.',
-                image: ''
+                image: `/images/collection-${collectionParam}.jpg`
             };
         }
         switch (categoryParam) {
             case 'wearable-tech': return {
                 title: 'Wearable Tech',
                 desc: 'Future-forward gear for the modern human.',
-                image: ''
+                image: '/images/hero-wearable-tech.jpg'
             };
             case 'men': return {
                 title: 'Men\'s Collection',
                 desc: 'Timeless staples and modern cuts.',
-                image: ''
+                image: '/images/hero-men.jpg'
             };
             case 'women': return {
                 title: 'Women\'s Collection',
                 desc: 'Elegant designs for every occasion.',
-                image: ''
+                image: '/images/hero-women.jpg'
             };
             case 'footwear': return {
                 title: 'Footwear',
                 desc: 'Step out in style and comfort.',
-                image: ''
+                image: '/images/hero-footwear.jpg'
             };
-            case 'accessories': return {
-                title: 'Accessories',
+            case 'jewellery': return {
+                title: 'Jewellery',
                 desc: 'The finishing touches defined.',
-                image: ''
+                image: '/images/hero-jewellery.jpg'
+            };
+            case 'sports-kit': return {
+                title: 'Sports Kit',
+                desc: 'Built for performance.',
+                image: '/images/hero-sports-kit.jpg'
             };
             default: return {
                 title: 'Shop Collection',
                 desc: 'Explore our premium collection of timeless fashion pieces.',
-                image: null
+                image: '/images/hero-main.jpg'
             };
         }
     };
@@ -197,9 +202,10 @@ function ShopContent() {
         { id: 'all', label: 'All Products' },
         { id: 'clothing', label: 'Clothing' },
         { id: 'footwear', label: 'Footwear' },
+        { id: 'sports-kit', label: 'Sports Kit' },
         { id: 'wearable-tech', label: 'Wearable Tech' },
         { id: 'watches', label: 'Watches' },
-        { id: 'jewelry', label: 'Jewelry' },
+        { id: 'jewellery', label: 'Jewellery' },
         { id: 'bags', label: 'Bags' },
         { id: 'eyewear', label: 'Eyewear' },
     ];

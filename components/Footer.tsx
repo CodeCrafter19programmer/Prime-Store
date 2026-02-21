@@ -37,7 +37,7 @@ export default function Footer() {
                         <ul className="space-y-4 text-sm text-gray-500 dark:text-gray-400">
                             <li><Link href="/shop?category=men" className="hover:text-black dark:hover:text-white transition-colors">Men</Link></li>
                             <li><Link href="/shop?category=women" className="hover:text-black dark:hover:text-white transition-colors">Women</Link></li>
-                            <li><Link href="/shop?category=accessories" className="hover:text-black dark:hover:text-white transition-colors">Accessories</Link></li>
+                            <li><Link href="/shop?category=jewellery" className="hover:text-black dark:hover:text-white transition-colors">Jewellery</Link></li>
                             <li><Link href="/shop?sort=newest" className="hover:text-black dark:hover:text-white transition-colors">New Arrivals</Link></li>
                         </ul>
                     </div>

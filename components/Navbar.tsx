@@ -76,7 +76,7 @@ export default function Navbar() {
         { name: 'Men', href: '/shop?category=men' },
         { name: 'Women', href: '/shop?category=women' },
         { name: 'Wearable Tech', href: '/shop?category=wearable-tech' },
-        { name: 'Accessories', href: '/shop?category=accessories' },
+        { name: 'Jewellery', href: '/shop?category=jewellery' },
         { name: 'Sports Kit', href: '/shop?category=sports-kit' },
         { name: 'New Arrivals', href: '/shop?sort=newest' },
     ];
