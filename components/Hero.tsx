@@ -9,7 +9,7 @@ export default function Hero() {
             <div className="absolute inset-0 bg-gray-200 dark:bg-gray-900">
                 {/* Placeholder Image from Unsplash */}
                 <div
-                    className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center"
+                    className="absolute inset-0 bg-gray-800"
                 />
                 <div className="absolute inset-0 bg-black/40" />
             </div>

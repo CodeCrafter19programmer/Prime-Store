@@ -10,43 +10,43 @@ const FEATURED_PRODUCTS = [
     name: 'Smart Knit Runner',
     price: 145.00,
     category: 'Footwear',
-    imageUrl: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1780&auto=format&fit=crop'
+    imageUrl: ''
   },
   {
     id: '2',
     name: 'Tech Fleece Hoodie',
     price: 120.00,
     category: 'Men',
-    imageUrl: 'https://images.unsplash.com/photo-1544642899-f0d6e5f6ed6f?q=80&w=1887&auto=format&fit=crop'
+    imageUrl: ''
   },
   {
     id: '3',
     name: 'Minimalist Chrono',
     price: 185.00,
     category: 'Watches',
-    imageUrl: 'https://images.unsplash.com/photo-1523170335258-f5ed11844a49?q=80&w=1780&auto=format&fit=crop'
+    imageUrl: ''
   },
   {
     id: '4',
     name: 'Connected Ring',
     price: 295.00,
     category: 'Wearable Tech',
-    imageUrl: 'https://images.unsplash.com/photo-1576053139778-7e32f2ae3cfd?q=80&w=1780&auto=format&fit=crop'
+    imageUrl: ''
   },
 ];
 
 const CATEGORIES = [
-  { name: 'Clothing', image: 'https://images.unsplash.com/photo-1551488852-080175ddbe60?q=80&w=2070', href: '/shop?category=clothing' },
-  { name: 'Sports Kit', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=2070', href: '/shop?category=sports-kit' },
-  { name: 'Wearable Tech', image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?q=80&w=2070', href: '/shop?category=wearable-tech' },
-  { name: 'Footwear', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=2070', href: '/shop?category=footwear' },
-  { name: 'Accessories', image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=2070', href: '/shop?category=accessories' },
+  { name: 'Clothing', image: '', href: '/shop?category=clothing' },
+  { name: 'Sports Kit', image: '', href: '/shop?category=sports-kit' },
+  { name: 'Wearable Tech', image: '', href: '/shop?category=wearable-tech' },
+  { name: 'Footwear', image: '', href: '/shop?category=footwear' },
+  { name: 'Accessories', image: '', href: '/shop?category=accessories' },
 ];
 
 const COLLECTIONS = [
-  { name: 'Streetwear Essentials', image: 'https://images.unsplash.com/photo-1523396870777-19123f67b5fc?q=80&w=1780', href: '/shop?collection=streetwear' },
-  { name: 'Smart & Stylish', image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070', href: '/shop?collection=smart' },
-  { name: 'Minimalist Jewelry', image: 'https://images.unsplash.com/photo-1599643478518-17488fbbcd75?q=80&w=1780', href: '/shop?collection=jewelry' },
+  { name: 'Streetwear Essentials', image: '', href: '/shop?collection=streetwear' },
+  { name: 'Smart & Stylish', image: '', href: '/shop?collection=smart' },
+  { name: 'Minimalist Jewelry', image: '', href: '/shop?collection=jewelry' },
 ];
 
 export default function Home() {
@@ -64,12 +64,15 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
           {CATEGORIES.map((cat) => (
             <Link key={cat.name} href={cat.href} className="group block relative aspect-[4/5] overflow-hidden rounded-sm">
-              <Image
-                src={cat.image}
-                alt={cat.name}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-              />
+              <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800" />
+              {cat.image && (
+                <Image
+                  src={cat.image}
+                  alt={cat.name}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+              )}
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <h3 className="text-white text-xl font-bold uppercase tracking-wider">{cat.name}</h3>
@@ -91,12 +94,15 @@ export default function Home() {
                 href={col.href}
                 className={`relative group overflow-hidden h-[500px] rounded-sm ${index === 1 ? 'md:-mt-12' : ''}`}
               >
-                <Image
-                  src={col.image}
-                  alt={col.name}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                <div className="absolute inset-0 bg-gray-200 dark:bg-gray-800" />
+                {col.image && (
+                  <Image
+                    src={col.image}
+                    alt={col.name}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                )}
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors" />
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
                   <h3 className="text-white text-3xl font-bold uppercase tracking-widest mb-4">{col.name}</h3>

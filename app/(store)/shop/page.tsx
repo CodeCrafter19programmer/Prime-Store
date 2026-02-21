@@ -154,34 +154,34 @@ function ShopContent() {
             return {
                 title: `${collectionParam} Collection`,
                 desc: 'Curated just for you.',
-                image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070'
+                image: ''
             };
         }
         switch (categoryParam) {
             case 'wearable-tech': return {
                 title: 'Wearable Tech',
                 desc: 'Future-forward gear for the modern human.',
-                image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?q=80&w=2070'
+                image: ''
             };
             case 'men': return {
                 title: 'Men\'s Collection',
                 desc: 'Timeless staples and modern cuts.',
-                image: 'https://images.unsplash.com/photo-1488161628813-99c974fc7994?q=80&w=2070'
+                image: ''
             };
             case 'women': return {
                 title: 'Women\'s Collection',
                 desc: 'Elegant designs for every occasion.',
-                image: 'https://images.unsplash.com/photo-1618244972963-dbee1a7edc95?q=80&w=2070'
+                image: ''
             };
             case 'footwear': return {
                 title: 'Footwear',
                 desc: 'Step out in style and comfort.',
-                image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=2070'
+                image: ''
             };
             case 'accessories': return {
                 title: 'Accessories',
                 desc: 'The finishing touches defined.',
-                image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=2070'
+                image: ''
             };
             default: return {
                 title: 'Shop Collection',

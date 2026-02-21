@@ -36,10 +36,10 @@ export async function POST(request: Request) {
         const newProduct = await prisma.product.create({
             data: {
                 name: body.name,
-                description: body.description,
+                description: body.description || '',
                 price: parseFloat(body.price),
                 category: body.category,
-                imageUrl: body.imageUrl || 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1780&auto=format&fit=crop',
+                imageUrl: body.imageUrl || '',
                 stock: parseInt(body.stock) || 0,
                 isArchived: false,
             }
