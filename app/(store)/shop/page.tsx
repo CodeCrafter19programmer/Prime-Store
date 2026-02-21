@@ -151,10 +151,15 @@ function ShopContent() {
             };
         }
         if (collectionParam) {
+            let collectionImg = `/images/collection-${collectionParam}.jpg`;
+            if (collectionParam === 'smart') collectionImg = '/images/collection-smart.jpeg';
+            if (collectionParam === 'jewelry' || collectionParam === 'jewellery') collectionImg = '/images/collection-jewellry.jpeg';
+            if (collectionParam === 'streetwear') collectionImg = '/images/collection-streatwear.jpg';
+
             return {
                 title: `${collectionParam} Collection`,
                 desc: 'Curated just for you.',
-                image: `/images/collection-${collectionParam}.jpg`
+                image: collectionImg
             };
         }
         switch (categoryParam) {

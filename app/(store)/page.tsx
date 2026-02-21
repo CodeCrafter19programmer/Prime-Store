@@ -36,17 +36,17 @@ const FEATURED_PRODUCTS = [
 ];
 
 const CATEGORIES = [
-  { name: 'Clothing', image: '/images/clothing.jpg', href: '/shop?category=clothing' },
-  { name: 'Sports Kit', image: '/images/sports-kit.jpg', href: '/shop?category=sports-kit' },
-  { name: 'Wearable Tech', image: '/images/wearable-tech.jpg', href: '/shop?category=wearable-tech' },
-  { name: 'Footwear', image: '/images/footwear.jpg', href: '/shop?category=footwear' },
-  { name: 'Jewellery', image: '/images/jewellery.jpg', href: '/shop?category=jewellery' },
+  { name: 'Clothing', image: '/images/hero-men.jpg', href: '/shop?category=clothing' },
+  { name: 'Sports Kit', image: '/images/hero-sports-kit.jpg', href: '/shop?category=sports-kit' },
+  { name: 'Wearable Tech', image: '/images/hero-wearable-tech.jpg', href: '/shop?category=wearable-tech' },
+  { name: 'Footwear', image: '/images/hero-footwear.jpg', href: '/shop?category=footwear' },
+  { name: 'Jewellery', image: '/images/hero-jewellery.jpg', href: '/shop?category=jewellery' },
 ];
 
 const COLLECTIONS = [
-  { name: 'Streetwear Essentials', image: '/images/collection-streetwear.jpg', href: '/shop?collection=streetwear' },
-  { name: 'Smart & Stylish', image: '/images/collection-smart.jpg', href: '/shop?collection=smart' },
-  { name: 'Minimalist Jewelry', image: '/images/collection-jewelry.jpg', href: '/shop?collection=jewelry' },
+  { name: 'Streetwear Essentials', image: '/images/collection-streatwear.jpg', href: '/shop?collection=streetwear' },
+  { name: 'Smart & Stylish', image: '/images/collection-smart.jpeg', href: '/shop?collection=smart' },
+  { name: 'Minimalist Jewelry', image: '/images/collection-jewellry.jpeg', href: '/shop?collection=jewelry' },
 ];
 
 export default function Home() {
