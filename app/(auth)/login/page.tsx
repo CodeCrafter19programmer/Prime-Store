@@ -45,7 +45,7 @@ function LoginContent() {
     };
 
     return (
-        <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center bg-gray-50 dark:bg-black/20 relative">
+        <div className="min-h-screen p-4 flex items-center justify-center bg-gray-50 dark:bg-black/20 relative">
             <Link
                 href="/"
                 className="absolute top-8 left-6 sm:left-8 inline-flex items-center gap-2 text-sm text-gray-400 hover:text-black dark:hover:text-white transition-colors group"
